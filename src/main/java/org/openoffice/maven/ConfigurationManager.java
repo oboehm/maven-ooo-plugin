@@ -297,7 +297,13 @@ public class ConfigurationManager {
      */
     private static String getSdkBinPath(String pHome) {
         String path = null;
-        
+
+        // OOo SDK does not seems to include th target os in their packaging
+        // anymore. Tested with 3.2.0
+        path = "/bin";
+        if (new File(pHome, path).exists())
+            return new File(pHome, path).getPath();
+
         // Get the OS and Architecture properties
         String os = System.getProperty("os.name").toLowerCase();
         String arch = System.getProperty("os.arch").toLowerCase();
