@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openoffice.dev</groupId>
-  <artifactId>maven-ooo-plugin</artifactId>
-  <packaging>maven-plugin</packaging>
-  <version>1.0</version>
-  <description>Maven plugin for OpenOffice.org extensions build</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
-      <version>2.0</version>
-    </dependency>
-  </dependencies>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openoffice.dev</groupId>
+	<artifactId>maven-ooo-plugin</artifactId>
+	<version>1.1</version>
+
+	<description>Maven plugin for OpenOffice.org extensions build
+	</description>
+
+	<packaging>maven-plugin</packaging>
+
+	<build>
+		<directory>${target.dir}</directory>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<target.dir>target</target.dir>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>eclipse-folders</id>
+			<properties>
+				<target.dir>target-eclipse</target.dir>
+			</properties>
+		</profile>
+	</profiles>
+
 </project>
 
