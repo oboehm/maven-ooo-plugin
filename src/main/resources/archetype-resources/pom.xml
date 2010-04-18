@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+  <description>Custom OOo extension</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openoffice.dev</groupId>
+        <artifactId>maven-ooo-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+        	<ooo></ooo>
+        	<sdk></sdk>
+        </configuration>
+        <executions>
+		  <execution>
+		    <phase>generate-sources</phase>
+		    <goals>
+		      <goal>build-idl</goal>
+		    </goals>
+		  </execution>
+        </executions>       
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

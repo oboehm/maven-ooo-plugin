@@ -1,0 +1,10 @@
+<archetype>
+  <id>maven-ooo-plugin</id>
+  <sources>
+  	<source>src/main/java/RegistrationHandler.java</source>
+  </sources>
+  <resources>
+  	<resource>src/main/resources/idl/README.txt</resource>
+  	<resource>src/main/resources/RegistrationHandler.classes</resource>
+  </resources>
+</archetype>
