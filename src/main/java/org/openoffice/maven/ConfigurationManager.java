@@ -53,7 +53,7 @@ import org.apache.maven.model.Resource;
  * Stores the Mojo configuration for use in the build visitors.
  * 
  * @author Cedric Bosdonnat
- *
+ * 
  */
 public class ConfigurationManager {
 
@@ -77,46 +77,44 @@ public class ConfigurationManager {
      */
     private static final String IDL_DIR = "idl";
 
-    
     private static File sOoo;
-    
+
     private static File sSdk;
-    
+
     private static File sOutput;
 
     private static File sClassesOutput;
-    
+
     private static File sResources;
-    
+
     /**
      * @return the folder where OpenOffice.org is installed.
      */
     public static File getOOo() {
         return sOoo;
     }
-    
+
     /**
      * @return the OpenOffice.org <code>types.rdb</code> file path
      */
     public static String getOOoTypesFile() {
-        
+
         String os = System.getProperty("os.name").toLowerCase();
         String oooTypes = new File(getOOo(), "/program/types.rdb").getPath();
         if (os.startsWith("macos")) {
-            oooTypes = new File(getOOo(), "/Contents/MacOS/types.rdb").
-                getPath();
+            oooTypes = new File(getOOo(), "/Contents/MacOS/types.rdb").getPath();
         }
-        
+
         return oooTypes;
     }
-    
+
     /**
      * @return the folder where OpenOffice.org SDK is installed.
      */
     public static File getSdk() {
         return sSdk;
     }
-    
+
     /**
      * @return the folder where the classes files are generated.
      */
@@ -140,10 +138,10 @@ public class ConfigurationManager {
     public static String getTypesFile() {
         return new File(sOutput, TYPES_FILE).getPath();
     }
-    
+
     /**
-     * @return the path to the folder containing the IDL files to build
-     *         or <code>null</code> if no IDL folder has been found.
+     * @return the path to the folder containing the IDL files to build or
+     *         <code>null</code> if no IDL folder has been found.
      */
     public static File getIdlDir() {
         File idl = null;
@@ -152,59 +150,64 @@ public class ConfigurationManager {
         }
         return idl;
     }
-    
+
     /**
      * Sets the OpenOffice.org installation folder to use for the build.
      * 
-     * @param pOoo the OpenOffice.org installation folder.
+     * @param pOoo
+     *            the OpenOffice.org installation folder.
      */
     public static void setOOo(File pOoo) {
         sOoo = pOoo;
     }
-    
+
     /**
      * Sets the OpenOffice.org SDK installation folder to use for the build.
      * 
-     * @param pSdk the OpenOffice.org SDK installation folder.
+     * @param pSdk
+     *            the OpenOffice.org SDK installation folder.
      */
     public static void setSdk(File pSdk) {
         sSdk = pSdk;
     }
-    
+
     /**
      * Sets the directory where the generated files should go.
      * 
-     * @param pOutput the output directory.
+     * @param pOutput
+     *            the output directory.
      */
     public static void setOutput(File pOutput) {
         sOutput = pOutput;
     }
-    
+
     /**
      * Sets the directory where the generated classes should go.
      * 
-     * @param pOutputDirectory the classes output directory.
+     * @param pOutputDirectory
+     *            the classes output directory.
      */
     public static void setClassesOutput(File pOutputDirectory) {
         sClassesOutput = pOutputDirectory;
     }
-    
+
     /**
      * Sets the directory containing the project resources.
      * 
-     * <p>The first resource directory containing and idl sub-folder is
-     * stored. All the other ones will not be taken into account.</p>
+     * <p>The first resource directory containing and idl sub-folder is stored.
+     * All the other ones will not be taken into account.</p>
      * 
-     * @param pResources the project resources configuration.
+     * @param pResources
+     *            the project resources configuration.
      */
-    public static void setResources(List pResources) {
-        Iterator iter = pResources.iterator();
-        
+    public static void setResources(List<Resource> pResources) {
+        Iterator<Resource> iter = pResources.iterator();
+
         boolean found = false;
         while (iter.hasNext() && !found) {
-            Resource resource = (Resource)iter.next();
+            Resource resource = iter.next();
             File resDir = new File(resource.getDirectory());
-            
+
             if (resDir.exists() && resDir.isDirectory()) {
                 // Look for the IDL folder
                 File potentialIdlDir = new File(resDir, IDL_DIR);
@@ -235,18 +238,18 @@ public class ConfigurationManager {
         
         String os = System.getProperty("os.name").toLowerCase();
         String path_sep = System.getProperty("path.separator");
-        
+
         String[] env = new String[0];
         String[] cmd = new String[COMMAND_ARRAY_SIZE];
-        
+
         String sdkBin = getSdkBinPath(sSdk.getPath());
-        
+
         if (os.startsWith("windows")) {
             // Windows environment
             env = new String[1];
             String oooLibs = new File(sOoo, "/program").getCanonicalPath();
             env[0] = "PATH=" + sdkBin + path_sep + oooLibs;
-            
+
             if (os.startsWith("windows 9")) {
                 cmd[0] = "command.com";
             } else {
@@ -262,7 +265,7 @@ public class ConfigurationManager {
                 getCanonicalPath();
             env[0] = "PATH=" + sdkBin;
             env[1] = "DYLD_LIBRARY_PATH=" + oooLibs;
-            
+
             cmd[0] = "sh";
             cmd[1] = "-c";
             cmd[2] = pCommand;
@@ -272,23 +275,24 @@ public class ConfigurationManager {
             String oooLibs = new File(sOoo, "/program").getCanonicalPath();
             env[0] = "PATH=" + sdkBin;
             env[1] = "LD_LIBRARY_PATH=" + oooLibs;
-            
+
             cmd[0] = "sh";
             cmd[1] = "-c";
             cmd[2] = pCommand;
         }
-            
+
         // Create the process
         Process process = Runtime.getRuntime().exec(cmd, env);
-        
+
         return process;
     }
-    
+
     /**
-     * Returns the path to the SDK binaries depending on the OS and the 
+     * Returns the path to the SDK binaries depending on the OS and the
      * architecture.
      * 
-     * @param pHome the OpenOffice.org SDK home
+     * @param pHome
+     *            the OpenOffice.org SDK home
      * @return the full path to the SDK binaries
      */
     private static String getSdkBinPath(String pHome) {
@@ -308,10 +312,10 @@ public class ConfigurationManager {
             }
         } else if (os.equals("macos x")) {
             path = "/macosx/bin";
-        } else  {
+        } else {
             path = "/linux/bin";
         }
-        
+
         return new File(pHome, path).getPath();
     }
 }

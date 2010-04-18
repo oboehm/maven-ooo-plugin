@@ -58,9 +58,9 @@ import org.openoffice.maven.utils.VisitableFile;
  * @author Cedric Bosdonnat
  */
 public class IdlcVisitor implements IVisitor {
-    
+
     private boolean mFoundIdlFile = false;
-    
+
     /**
      * @return <code>true</code> if one IDL file have been build,
      *         <code>false</code> otherwise
@@ -75,16 +75,15 @@ public class IdlcVisitor implements IVisitor {
     public boolean visit(IVisitable pNode) throws Exception {
 
         boolean visitChildren = false;
-        VisitableFile file = (VisitableFile)pNode;
+        VisitableFile file = (VisitableFile) pNode;
 
         if (file.isFile() && file.canRead()) {
             // Try to compile the file if it is an IDL file
             if (file.getName().endsWith(".idl")) {
                 runIdlcOnFile(file);
-                mFoundIdlFile  = true;
+                mFoundIdlFile = true;
             }
         } else if (file.isDirectory()) {
-
             visitChildren = true;
         }
         return visitChildren;
@@ -93,11 +92,13 @@ public class IdlcVisitor implements IVisitor {
     /**
      * Executes the <code>idlc</code> tool on the provided IDL file.
      * 
-     * @param pFile the IDL file to compile
-     * @throws Exception if the idl file compilation fails
+     * @param pFile
+     *            the IDL file to compile
+     * @throws Exception
+     *             if the idl file compilation fails
      */
     private static void runIdlcOnFile(VisitableFile pFile) throws Exception {
-        
+
         new IdlBuilderMojo().getLog().info("Building file: " + pFile.getPath());
         
         String commandPattern = "idlc -O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";

@@ -96,7 +96,7 @@ public class RegmergeVisitor implements IVisitor {
         
         String[] args = {projectTypes, pFile.getPath()};
         
-        String command = MessageFormat.format(commandPattern, args);
+        String command = MessageFormat.format(commandPattern, (Object[]) args);
         
         // Run regmerge
         Process process = ConfigurationManager.runTool(command);

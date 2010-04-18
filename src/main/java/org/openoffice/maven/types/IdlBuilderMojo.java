@@ -49,6 +49,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -84,7 +85,7 @@ public class IdlBuilderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    private List resources;
+    private List<Resource> resources;
 
     /**
      * This is where compiled classes go.
@@ -212,7 +213,7 @@ public class IdlBuilderMojo extends AbstractMojo {
             typesFile, 
             oooTypesFile
         };
-        String command = MessageFormat.format(commandPattern, args);
+        String command = MessageFormat.format(commandPattern, (Object[])args);
 
         getLog().info("Running command: " + command);
         
