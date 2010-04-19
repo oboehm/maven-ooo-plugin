@@ -6,7 +6,7 @@
 	<artifactId>maven-ooo-plugin</artifactId>
 	<version>1.1</version>
 
-	<name></name>
+	<name>Maven OOo development plugin</name>
 	<description>Maven plugin for OpenOffice.org extensions build</description>
 
 	<packaging>maven-plugin</packaging>
