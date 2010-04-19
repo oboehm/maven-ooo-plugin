@@ -11,7 +11,7 @@
 	<packaging>maven-plugin</packaging>
 
 	<build>
-		<directory>${target.dir}</directory>
+		<directory>target</directory>
 	</build>
 
 	<dependencies>
@@ -27,18 +27,21 @@
 		</dependency>
 	</dependencies>
 
-	<properties>
-		<target.dir>target</target.dir>
-	</properties>
-
 	<profiles>
 		<profile>
-			<id>eclipse-folders</id>
+			<id>m2eclipse</id>
 			<properties>
-				<target.dir>target-eclipse</target.dir>
+				<targetDir>target-eclipse</targetDir>
 			</properties>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<directory>${targetDir}</directory>
+			</build>
 		</profile>
 	</profiles>
-
 </project>
 

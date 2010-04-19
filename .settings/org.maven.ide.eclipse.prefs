@@ -1,9 +1,9 @@
-#Sat Apr 17 23:25:26 EDT 2010
-activeProfiles=eclipse-folders
+#Sun Apr 18 20:35:56 EDT 2010
+activeProfiles=
 eclipse.preferences.version=1
 fullBuildGoals=process-test-resources
 includeModules=false
-resolveWorkspaceProjects=true
+resolveWorkspaceProjects=false
 resourceFilterGoals=process-resources resources\:testResources
 skipCompilerPlugin=true
 version=1
