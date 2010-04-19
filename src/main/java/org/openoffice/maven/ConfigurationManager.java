@@ -46,6 +46,7 @@ package org.openoffice.maven;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.model.Resource;
 
@@ -66,11 +67,6 @@ public class ConfigurationManager {
      * Path to the <code>types.rdb</code> file in the output directory.
      */
     private static final String TYPES_FILE = "types.rdb";
-
-    /**
-     * The size of the command array needed for a tool process execution.
-     */
-    private static final int COMMAND_ARRAY_SIZE = 3;
 
     /**
      * The path to the IDL directory in the resources directory.
@@ -219,36 +215,30 @@ public class ConfigurationManager {
         }
     }
 
-    /**
-     * Runs an OpenOffice.org SDK tool from a command line.
-     * 
-     * <p>The command line to execute is dependent of the running operating 
-     * system. The tool executable should be located in the SDK platform's bin
-     * folder.</p>
-     * 
-     * @param pCommand the command line to execute.
-     * 
-     * @return The process of the command line execution.
-     * 
-     * @throws Exception if anything wrong happens during the process creation.
-     *             This exception isn't thrown if the process fails: 
-     *             this should be handled by the method caller.
-     */
     public static Process runTool(String pCommand) throws Exception {
-        
+        return runTool(new String[] { pCommand });
+    }
+
+    public static Process runTool(String pCommand, String args) throws Exception {
+        return runTool(new String[] { pCommand, args });
+    }
+
+    public static Process runTool(String[] pCommand) throws Exception {
+
         String os = System.getProperty("os.name").toLowerCase();
         String path_sep = System.getProperty("path.separator");
 
         String[] env = new String[0];
-        String[] cmd = new String[COMMAND_ARRAY_SIZE];
+        String[] cmd = new String[2 + pCommand.length];
+        File oooLibs;
 
         String sdkBin = getSdkBinPath(sSdk.getPath());
 
         if (os.startsWith("windows")) {
             // Windows environment
             env = new String[1];
-            String oooLibs = new File(sOoo, "/program").getCanonicalPath();
-            env[0] = "PATH=" + sdkBin + path_sep + oooLibs;
+            oooLibs = new File(sOoo, "/program");
+            env[0] = "PATH=" + sdkBin + path_sep + oooLibs.getCanonicalPath();
 
             if (os.startsWith("windows 9")) {
                 cmd[0] = "command.com";
@@ -256,35 +246,63 @@ public class ConfigurationManager {
                 cmd[0] = "cmd.exe";
             }
             cmd[1] = "/C";
-            cmd[2] = pCommand;
-            
         } else if (os.startsWith("macos x")) {
             // MacOS environment
             env = new String[2];
-            String oooLibs = new File(sOoo, "/Contents/MacOS").
-                getCanonicalPath();
+            oooLibs = new File(sOoo, "/Contents/MacOS");
             env[0] = "PATH=" + sdkBin;
-            env[1] = "DYLD_LIBRARY_PATH=" + oooLibs;
+            env[1] = "DYLD_LIBRARY_PATH=" + oooLibs.getCanonicalPath();
 
             cmd[0] = "sh";
             cmd[1] = "-c";
-            cmd[2] = pCommand;
         } else {
             // *NIX environment
             env = new String[2];
-            String oooLibs = new File(sOoo, "/program").getCanonicalPath();
+            oooLibs = new File(sOoo, "/program");
             env[0] = "PATH=" + sdkBin;
-            env[1] = "LD_LIBRARY_PATH=" + oooLibs;
+            env[1] = "LD_LIBRARY_PATH=" + oooLibs.getCanonicalPath();
 
             cmd[0] = "sh";
             cmd[1] = "-c";
-            cmd[2] = pCommand;
         }
 
-        // Create the process
-        Process process = Runtime.getRuntime().exec(cmd, env);
+        System.arraycopy(pCommand, 0, cmd, 2, pCommand.length);
 
-        return process;
+        // Create the process
+        ProcessBuilder b = new ProcessBuilder(cmd);
+        // copy pasted from ProcessBuilder.environment(String[])
+        Map<String, String> e = b.environment();
+        for (String envstring : env) {
+            if (envstring.indexOf('\u0000') != -1)
+                envstring = envstring.replaceFirst("\u0000.*", "");
+
+            int eqlsign = envstring.indexOf('=', 1);
+            if (eqlsign != -1) {
+                String key = envstring.substring(0, eqlsign);
+                String value = envstring.substring(eqlsign + 1);
+                if ("path".equalsIgnoreCase(key)) {
+                    if (os.startsWith("windows")) {
+                        // for windows, path env var is not case sensitive.
+                        for (String k : e.keySet()) {
+                            if ("path".equalsIgnoreCase(k)) {
+                                key = k;
+                                break;
+                            }
+                        }
+                    }
+                    e.put(key, e.get(key) + path_sep + value);
+                } else {
+                    e.put(key, value);
+                }
+            }
+        }
+        b.redirectErrorStream(true);
+
+        // System.out.println("\nRunning: [" + StringUtils.join(cmd, " ") +
+        // "] \nwith env [" + StringUtils.join(env, " ")
+        // + "] \nin dir [" + oooLibs + "]");
+
+        return b.start();
     }
 
     /**
@@ -307,7 +325,7 @@ public class ConfigurationManager {
         // Get the OS and Architecture properties
         String os = System.getProperty("os.name").toLowerCase();
         String arch = System.getProperty("os.arch").toLowerCase();
-        
+
         if (os.startsWith("windows")) {
             path = "/windows/bin/";
         } else if (os.equals("solaris")) {
