@@ -41,9 +41,11 @@
  *
  *
  ************************************************************************/
-package org.openoffice.maven.types;
+package org.openoffice.maven.idl;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 
 import org.openoffice.maven.ConfigurationManager;
@@ -100,25 +102,36 @@ public class IdlcVisitor implements IVisitor {
     private static void runIdlcOnFile(VisitableFile pFile) throws Exception {
 
         new IdlBuilderMojo().getLog().info("Building file: " + pFile.getPath());
-        
-        String commandPattern = "idlc -O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";
-            
+
         String idlPath = ConfigurationManager.getIdlDir().getPath();
-        String idlRelativePath = pFile.getParentFile().getPath().
-                substring(idlPath.length());
-            
-        String outDir = new File(ConfigurationManager.getUrdDir(), 
-                idlRelativePath).getPath();
-        String sdkIdl = new File(ConfigurationManager.getSdk(), 
-                "idl").getPath();
-        String prjIdl = ConfigurationManager.getIdlDir().getPath();
-            
-        String[] args = {outDir, sdkIdl, prjIdl, pFile.getPath()};
-            
-        String command = MessageFormat.format(commandPattern, args);
-            
-        Process process = ConfigurationManager.runTool(command);
-            
+        String idlRelativePath = pFile.getParentFile().getPath().substring(idlPath.length());
+
+        File outDir = new File(ConfigurationManager.getUrdDir(), idlRelativePath);
+        outDir.mkdirs();
+        File sdkIdl = new File(ConfigurationManager.getSdk(), "idl");
+        File prjIdl = ConfigurationManager.getIdlDir();
+
+        System.out.println(outDir);
+
+        String[] argsParam = { outDir.getPath(), sdkIdl.getPath(), prjIdl.getPath(), pFile.getPath() };
+
+        File command = new File("idlc");
+        String args = "-O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";
+        args = MessageFormat.format(args, (Object[]) argsParam);
+        
+        args = "--help";
+        
+        Process process = ConfigurationManager.runTool(command.getPath(), args);
+
         ErrorReader.readErrors(process.getErrorStream());
+
+        String output = "";
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = buffer.readLine();
+        while (null != line) {
+            output += line + "\n";
+            line = buffer.readLine();
+        }
+        System.out.println("Output: " + output);
     }
 }

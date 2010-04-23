@@ -41,7 +41,7 @@
  *
  *
  ************************************************************************/
-package org.openoffice.maven.types;
+package org.openoffice.maven.idl;
 
 import java.io.File;
 import java.io.FilenameFilter;
