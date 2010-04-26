@@ -12,17 +12,17 @@
         <artifactId>maven-ooo-plugin</artifactId>
         <version>1.0</version>
         <configuration>
-        	<ooo></ooo>
-        	<sdk></sdk>
+          <ooo></ooo>
+          <sdk></sdk>
         </configuration>
         <executions>
-		  <execution>
-		    <phase>generate-sources</phase>
-		    <goals>
-		      <goal>build-idl</goal>
-		    </goals>
-		  </execution>
-        </executions>       
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build-idl</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
