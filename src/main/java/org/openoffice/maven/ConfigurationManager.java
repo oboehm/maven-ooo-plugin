@@ -73,6 +73,11 @@ public class ConfigurationManager {
      */
     private static final String IDL_DIR = "idl";
 
+    /**
+     * The path to the OXT directory in the resources directory.
+     */
+    private static final String OXT_DIR = "oxt";
+
     private static File sOoo;
 
     private static File sSdk;
@@ -143,6 +148,18 @@ public class ConfigurationManager {
         File idl = null;
         if (sResources != null) {
             idl = new File(sResources, IDL_DIR);
+        }
+        return idl;
+    }
+
+    /**
+     * @return the path to the folder containing the IDL files to build or
+     *         <code>null</code> if no IDL folder has been found.
+     */
+    public static File getOxtDir() {
+        File idl = null;
+        if (sResources != null) {
+            idl = new File(sResources, OXT_DIR);
         }
         return idl;
     }

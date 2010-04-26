@@ -10,23 +10,24 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 import org.openoffice.maven.ConfigurationManager;
 
 /**
- * 
  * @author Frederic Morin <frederic.morin.8@gmail.com>
- * 
  * @goal install
  * @phase install
  */
 public class OOoInstalMojo extends AbstractMojo {
 
     /**
-     * @parameter default-value="${project.attachedArtifacts}
+     * The Maven project.
+     * 
+     * @parameter expression="${project}"
      * @required
      * @readonly
      */
-    private List<Artifact> attachedArtifacts;
+    private MavenProject project;
 
     /**
      * OOo instance to build the extension against.
@@ -45,8 +46,10 @@ public class OOoInstalMojo extends AbstractMojo {
     private File sdk;
 
     /**
-     * <p>This method install an openoffice plugin package to the specified
-     * openoffice installation</p>
+     * <p>
+     * This method install an openoffice plugin package to the specified
+     * openoffice installation
+     * </p>
      * 
      * @throws MojoExecutionException
      *             if there is a problem during the packaging execution.
@@ -60,19 +63,10 @@ public class OOoInstalMojo extends AbstractMojo {
         ConfigurationManager.setSdk(sdk);
         getLog().debug("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
 
-        Artifact unoPlugin = null;
-        for (Artifact attachedArtifact : attachedArtifacts) {
-            if ("zip".equals(FilenameUtils.getExtension(attachedArtifact.getFile().getPath()))) {
-                unoPlugin = attachedArtifact;
-                break;
-            }
+        File unoPluginFile = project.getArtifact().getFile();
+        if (!unoPluginFile.exists()) {
+            throw new MojoExecutionException("Could not find plugin artefact [" + unoPluginFile + "]");
         }
-
-        if (unoPlugin == null) {
-            throw new MojoExecutionException("Could not find plugin artefact (.zip)");
-        }
-        
-        File unoPluginFile = unoPlugin.getFile();
 
         try {
             String os = System.getProperty("os.name").toLowerCase();
@@ -80,9 +74,9 @@ public class OOoInstalMojo extends AbstractMojo {
             if (os.startsWith("windows"))
                 unopkg = "unopkg.com";
             String[] cmd = new String[] { unopkg, //
-                    "add", //
-                    "-f", //
-                    unoPluginFile.getCanonicalPath(), //
+                            "add", //
+                            "-f", //
+                            unoPluginFile.getCanonicalPath(), //
             };
 
             getLog().info("Installing plugin to OOo... please wait");
@@ -98,10 +92,10 @@ public class OOoInstalMojo extends AbstractMojo {
                 if (message.length() > 0)
                     getLog().info(message);
             }
-            
-            int returnCode = process.exitValue();
+
+            int returnCode = process.waitFor();
             boolean success = returnCode == 0;
-            
+
             if (success)
                 getLog().info("Plugin installed successfully");
             else
