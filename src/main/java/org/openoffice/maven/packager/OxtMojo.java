@@ -169,6 +169,7 @@ public class OxtMojo extends AbstractOxtMojo {
         }
 
         pkg.addContent(null, oxtDir);
+        
         if (pkg.close() == null) {
             getLog().error("OXT Package Build failed");
         }
