@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
@@ -288,7 +289,7 @@ public class ConfigurationManager {
             }
             cmd[1] = "/C";
             System.arraycopy(pCommand, 0, cmd, 2, pCommand.length);
-        } else if (Environment.isMacOS()) {
+        } else if (SystemUtils.IS_OS_MAC) {
             // MacOS environment
             env = new String[2];
             oooLibs = Environment.getOoSdkUreLibDir();
@@ -404,7 +405,7 @@ public class ConfigurationManager {
             } else {
                 path = "/solintel/bin";
             }
-        } else if (Environment.isMacOS()) {
+        } else if (SystemUtils.IS_OS_MAC) {
             path = "/bin";
         } else {
             path = "/linux/bin";

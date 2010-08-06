@@ -106,7 +106,7 @@ public final class Environment {
      */
     public static synchronized File getOfficeBaseHome() {
         if (officeBaseHome == null) {
-            if (isMacOS()) {
+            if (SystemUtils.IS_OS_MAC) {
                 officeBaseHome = new File(getOfficeHome(), "Contents/basis-link");
             } else {
                 officeBaseHome = new File(getOfficeHome(), "basis-link");
@@ -170,16 +170,6 @@ public final class Environment {
         return new File(getOoSdkUreHome(), "bin");
     }
     
-    /**
-     * Checks if is the OS is Mac OS X.
-     *
-     * @return true, if Mac OS
-     */
-    public static boolean isMacOS() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac");
-    }
-
     private static String getenv(String name) {
         String value = System.getenv(name);
         if (value == null) {
