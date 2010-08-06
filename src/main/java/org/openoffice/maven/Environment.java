@@ -59,7 +59,9 @@ public final class Environment {
             return home;
         }
         if (SystemUtils.IS_OS_LINUX) {
-            return new File("/usr/lib/openoffice");
+            return tryDirs("/opt/openoffice.org3", "/usr/lib/openoffice");
+        } if (SystemUtils.IS_OS_MAC) {
+            return tryDirs("/Applications/OpenOffice.org.app", "/opt/ooo/OpenOffice.org.app");
         }
         return null;
     }
@@ -70,7 +72,19 @@ public final class Environment {
             return home;
         }
         if (SystemUtils.IS_OS_LINUX) {
-            return new File("/usr/lib/openoffice/basis3.2/sdk");
+            return tryDirs("/opt/openoffice.org/basis3.2/sdk", "/usr/lib/openoffice/basis3.2/sdk");
+        } if (SystemUtils.IS_OS_MAC) {
+            return tryDirs("/Applications/OpenOffice.org3.2_SDK", "/opt/ooo/OpenOffice.org3.2_SDK");
+        }
+        return null;
+    }
+    
+    private static File tryDirs(final String... dirnames) {
+        for (int i = 0; i < dirnames.length; i++) {
+            File dir = new File(dirnames[i]);
+            if (dir.isDirectory()) {
+                return dir;
+            }
         }
         return null;
     }
