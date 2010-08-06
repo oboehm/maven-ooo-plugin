@@ -47,7 +47,7 @@ public final class Environment {
     private static final String OO_SDK_URE_HOME = "OO_SDK_URE_HOME";
     private static File officeHome = guessOfficeHome();
     private static File officeBaseHome = getenvAsFile(OFFICE_BASE_HOME);
-    private static File ooSdkHome = getenvAsFile(OO_SDK_HOME);
+    private static File ooSdkHome = guessOoSdkHome();
     private static File ooSdkUreHome = getenvAsFile(OO_SDK_URE_HOME);
     
     /** Utility class - no need to instantiate it. */
@@ -60,6 +60,17 @@ public final class Environment {
         }
         if (SystemUtils.IS_OS_LINUX) {
             return new File("/usr/lib/openoffice");
+        }
+        return null;
+    }
+    
+    private static File guessOoSdkHome() {
+        File home = getenvAsFile(OFFICE_BASE_HOME);
+        if (home != null) {
+            return home;
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            return new File("/usr/lib/openoffice/basis3.2/sdk");
         }
         return null;
     }
@@ -98,8 +109,7 @@ public final class Environment {
             if (isMacOS()) {
                 officeBaseHome = new File(getOfficeHome(), "Contents/basis-link");
             } else {
-                // TODO: support also Linux and Windows
-                throw new UnsupportedOperationException(System.getProperty("os.name") + " is not yet supported");
+                officeBaseHome = new File(getOfficeHome(), "basis-link");
             }
         }
         return officeBaseHome;
