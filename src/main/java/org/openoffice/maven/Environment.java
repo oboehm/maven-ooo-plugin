@@ -26,6 +26,8 @@ package org.openoffice.maven;
 
 import java.io.File;
 
+import org.apache.commons.lang.SystemUtils;
+
 /**
  * This class handles the differences between the support OS.
  * For the names and initalization look at "setsdkenv_unix.sh" which is
@@ -43,13 +45,24 @@ public final class Environment {
     private static final String OFFICE_BASE_HOME = "OFFICE_BASE_HOME";
     private static final String OO_SDK_HOME = "OO_SDK_HOME";
     private static final String OO_SDK_URE_HOME = "OO_SDK_URE_HOME";
-    private static File officeHome = getenvAsFile(OFFICE_HOME);
+    private static File officeHome = guessOfficeHome();
     private static File officeBaseHome = getenvAsFile(OFFICE_BASE_HOME);
     private static File ooSdkHome = getenvAsFile(OO_SDK_HOME);
     private static File ooSdkUreHome = getenvAsFile(OO_SDK_URE_HOME);
     
     /** Utility class - no need to instantiate it. */
     private Environment() {}
+    
+    private static File guessOfficeHome() {
+        File home = getenvAsFile(OFFICE_HOME);
+        if (home != null) {
+            return home;
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            return new File("/usr/lib/openoffice");
+        }
+        return null;
+    }
     
     /**
      * Sets home directory of OpenOffice (OFFICE_HOME).

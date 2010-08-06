@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
@@ -51,9 +52,11 @@ public class AbstractTest {
             Environment.getOfficeHome();
             Environment.getOoSdkHome();
         } catch (IllegalStateException e) {
-            log.info("OO environment not set, using my defaults...", e);
-            Environment.setOfficeHome(new File("/opt/ooo/OpenOffice.org.app"));
-            Environment.setOoSdkHome(new File("/opt/ooo/OpenOffice.org3.2_SDK"));
+            if (SystemUtils.IS_OS_MAC) {
+                log.info("OO environment not set, using my defaults...", e);
+                Environment.setOfficeHome(new File("/opt/ooo/OpenOffice.org.app"));
+                Environment.setOoSdkHome(new File("/opt/ooo/OpenOffice.org3.2_SDK"));
+            }
         }
         if (ConfigurationManager.getIdlDir() == null) {
             setIdlDir();
