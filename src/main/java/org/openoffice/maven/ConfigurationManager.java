@@ -27,7 +27,8 @@
  ************************************************************************/
 package org.openoffice.maven;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -94,16 +95,13 @@ public class ConfigurationManager {
      * @return the OpenOffice.org <code>types.rdb</code> file path
      */
     public static String getOOoTypesFile() {
-
-        String oooTypes = new File(getOOo(), "/program/types.rdb").getPath();
-        if (Environment.isMacOS()) {
-            //oooTypes = new File(getOOo(), "Contents/basis-link/ure-link/share/misc/types.rdb").getPath();
-            oooTypes = new File(Environment.getOoSdkUreHome(), "/share/misc/types.rdb").getPath();
+        File oooTypes = new File(getOOo(), "/program/types.rdb");
+        if (!oooTypes.exists()) {
+            oooTypes = new File(Environment.getOoSdkUreHome(), "/share/misc/types.rdb");
         }
-
-        return oooTypes;
+        return oooTypes.getPath();
     }
-    
+
     /**
      * @return the OpenOffice.org <code>offapi.rdb</code> file path
      */

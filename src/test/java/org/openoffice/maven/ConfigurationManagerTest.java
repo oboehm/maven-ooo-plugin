@@ -24,7 +24,9 @@
 
 package org.openoffice.maven;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.InputStream;
@@ -32,7 +34,6 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -46,16 +47,16 @@ public final class ConfigurationManagerTest extends AbstractTest {
     
     private static final Log log = new SystemStreamLog();
     
-    /**
-     * The path to OpenOffice home is set up here. At the moment this is
-     * hardcoded for my MacBook. Better approach would be to use a system
-     * property.
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        ConfigurationManager.setOOo(new File("/opt/ooo/OpenOffice.org.app"));
-        ConfigurationManager.setSdk(new File("/opt/ooo/OpenOffice.org3.2_SDK"));
-    }
+//    /**
+//     * The path to OpenOffice home is set up here. At the moment this is
+//     * hardcoded for my MacBook. Better approach would be to use a system
+//     * property.
+//     */
+//    @BeforeClass
+//    public static void setUpBeforeClass() {
+//        ConfigurationManager.setOOo(new File("/opt/ooo/OpenOffice.org.app"));
+//        ConfigurationManager.setSdk(new File("/opt/ooo/OpenOffice.org3.2_SDK"));
+//    }
 
     /**
      * Test method for {@link org.openoffice.maven.ConfigurationManager#getOOoTypesFile()}.
