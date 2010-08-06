@@ -99,9 +99,6 @@ public class RegmergeVisitor implements IVisitor {
         String command = MessageFormat.format(commandPattern, (Object[]) args);
         
         // Run regmerge
-        Process process = ConfigurationManager.runTool(command);
-        
-        // Just wait for the process to end before destroying it
-        process.waitFor();
+        ConfigurationManager.runTool(command);
     }
 }

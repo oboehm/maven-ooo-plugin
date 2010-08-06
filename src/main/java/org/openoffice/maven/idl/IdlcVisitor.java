@@ -93,18 +93,20 @@ public class IdlcVisitor implements IVisitor {
 
     /**
      * Executes the <code>idlc</code> tool on the provided IDL file.
+     * <br/>
+     * The method has default visibility for testing.
      * 
      * @param pFile
      *            the IDL file to compile
      * @throws Exception
      *             if the idl file compilation fails
      */
-    private static void runIdlcOnFile(VisitableFile pFile) throws Exception {
+    static void runIdlcOnFile(VisitableFile pFile) throws Exception {
 
         new IdlBuilderMojo().getLog().info("Building file: " + pFile.getPath());
 
-        String idlPath = ConfigurationManager.getIdlDir().getPath();
-        String idlRelativePath = pFile.getParentFile().getPath().substring(idlPath.length());
+        String idlPath = ConfigurationManager.getIdlDir().getAbsolutePath();
+        String idlRelativePath = pFile.getParentFile().getAbsolutePath().substring(idlPath.length());
 
         File outDir = new File(ConfigurationManager.getUrdDir(), idlRelativePath);
         outDir.mkdirs();
@@ -119,8 +121,6 @@ public class IdlcVisitor implements IVisitor {
         String args = "-O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";
         args = MessageFormat.format(args, (Object[]) argsParam);
         
-        args = "--help";
-        
         Process process = ConfigurationManager.runTool(command.getPath(), args);
 
         ErrorReader.readErrors(process.getErrorStream());
@@ -133,5 +133,9 @@ public class IdlcVisitor implements IVisitor {
             line = buffer.readLine();
         }
         System.out.println("Output: " + output);
+        int n = process.waitFor();
+        if (n != 0) {
+            throw new Exception("'" + command + " " + args + "' exits with " + n);
+        }
     }
 }

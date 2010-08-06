@@ -1,4 +1,6 @@
 CVS
 target-eclipse
 target
-bin
+bin/target
+/target-eclipse
+/target

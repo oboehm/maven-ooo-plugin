@@ -50,11 +50,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.*;
 import org.openoffice.maven.ConfigurationManager;
-import org.openoffice.maven.utils.ErrorReader;
 import org.openoffice.maven.utils.VisitableFile;
 
 /**
@@ -66,6 +63,15 @@ import org.openoffice.maven.utils.VisitableFile;
  * @author Cedric Bosdonnat
  */
 public class IdlBuilderMojo extends AbstractMojo {
+
+    static final class PackageNameFilter implements FilenameFilter {
+        public boolean accept(File pDir, String pName) {
+            if ("CVS".equals(pName)) {
+                return false;
+            }
+            return Pattern.matches(IDENTIFIER_REGEX, pName);
+        }
+    }
 
     private static final String IDENTIFIER_REGEX = "[_a-zA-Z0-9]+";
     
@@ -111,6 +117,13 @@ public class IdlBuilderMojo extends AbstractMojo {
      * @required
      */
     private File sdk;
+    
+    /**
+     * IDL directory where the IDL sources can be found
+     * 
+     * @parameter expression="src/main/idl"
+     */
+    private File idlDir;
 
     /**
      * Main method of the idl builder Mojo.
@@ -139,6 +152,9 @@ public class IdlBuilderMojo extends AbstractMojo {
             ConfigurationManager.setSdk(sdk);
             getLog().info("OpenOffice.org SDK used: " + 
                     sdk.getAbsolutePath());
+            
+            ConfigurationManager.setIdlDir(idlDir);
+            getLog().info("idlDir used: " + idlDir.getAbsolutePath());
 
             ConfigurationManager.setOutput(directory);
             ConfigurationManager.setClassesOutput(outputDirectory);
@@ -186,6 +202,8 @@ public class IdlBuilderMojo extends AbstractMojo {
      * Generates the java classes from the project <code>types.rdb</code>.
      * 
      * @throws Exception if anything wrong happens
+     * @see {@link "http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/WritingUNO/Generating_Source_Code_from_UNOIDL_Definitions"}
+     * @see {@link "http://api.openoffice.org/servlets/ReadMsg?listName=dev&msgNo=19839"}
      */
     private void generatesClasses() throws Exception {
         
@@ -193,12 +211,12 @@ public class IdlBuilderMojo extends AbstractMojo {
         
         if (!new File(typesFile).exists()) {
             throw new Exception(
-                    "No types.rdb file build: check previous errors");
+                    "No " + typesFile + " file build: check previous errors");
         }
 
         // Compute the command
         String commandPattern = "javamaker -T{0}.* -nD -Gc -BUCR -O " +
-                "\"{1}\" \"{2}\" -X\"{3}\"";
+                "\"{1}\" \"{2}\" -X\"{3}\" -X\"{4}\"";
 
         String classesDir = ConfigurationManager.getClassesOutput().
             getPath();
@@ -211,15 +229,15 @@ public class IdlBuilderMojo extends AbstractMojo {
             rootModule, 
             classesDir, 
             typesFile, 
-            oooTypesFile
+            oooTypesFile,
+            ConfigurationManager.getOffapiTypesFile()
         };
         String command = MessageFormat.format(commandPattern, (Object[])args);
 
         getLog().info("Running command: " + command);
         
         // Run the javamaker command
-        Process process = ConfigurationManager.runTool(command);
-        ErrorReader.readErrors(process.getErrorStream());
+        ConfigurationManager.runTool(command);
     }
 
     /**
@@ -245,13 +263,7 @@ public class IdlBuilderMojo extends AbstractMojo {
             
             // List only the valid children
             String[] children = currentFile.list(
-                    new FilenameFilter() {
-                
-                        public boolean accept(File pDir, String pName) {
-                            return Pattern.matches(IDENTIFIER_REGEX, pName);
-                        }
-
-                    });
+                    new PackageNameFilter());
             
             childCount = children.length;
             if (childCount == 1) {
@@ -259,13 +271,14 @@ public class IdlBuilderMojo extends AbstractMojo {
             }
         }
         
-        String rootModule = "";
-        
+        if (currentFile.equals(idlDir)) {
+            getLog().warn("no children found in " + idlDir);
+            return "";
+        }
         String modulePath = currentFile.getPath().substring(
                 idlDir.getPath().length() + 1);
         String fileSep = System.getProperty("file.separator");
-        rootModule = modulePath.replaceAll(fileSep, ".");
-        
+        String rootModule = modulePath.replaceAll(fileSep, ".");
         return rootModule;
     }
 }

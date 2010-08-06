@@ -1,0 +1,10 @@
+#ifndef __hello_WorldInterface_idl__
+#define __hello_WorldInterface_idl__
+module hello {    
+
+    interface WorldInterface {
+		void print();
+    };
+
+};
+#endif

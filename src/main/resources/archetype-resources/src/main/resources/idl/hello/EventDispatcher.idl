@@ -1,0 +1,15 @@
+#ifndef __hello_eventdispatcher_idl__
+#define __hello_eventdispatcher_idl__
+#include <com/sun/star/sheet/XSpreadsheetDocument.idl>
+module hello {    
+
+    interface EventDispatcher {
+        boolean processOpenEvent([in] com::sun::star::sheet::XSpreadsheetDocument xSpreadsheetDocument);
+        boolean processSaveEvent([in] com::sun::star::sheet::XSpreadsheetDocument xSpreadsheetDocument);
+        boolean processCloseEvent([in] com::sun::star::sheet::XSpreadsheetDocument xSpreadsheetDocument);
+        void processChangeEvent([in] com::sun::star::sheet::XSpreadsheetDocument xSpreadsheetDocument);
+        void processAfterSaveEvent([in] com::sun::star::sheet::XSpreadsheetDocument xSpreadsheetDocument);
+    };
+
+ };
+#endif
