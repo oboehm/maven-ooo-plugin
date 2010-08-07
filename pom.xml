@@ -4,7 +4,7 @@
 
   <groupId>org.openoffice.dev</groupId>
   <artifactId>maven-ooo-plugin</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.1.1-SNAPSHOT</version>
 
   <name>Maven OOo development plugin</name>
   <description>Maven plugin for OpenOffice.org extensions build</description>
