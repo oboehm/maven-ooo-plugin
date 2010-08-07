@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.*;
 import org.openoffice.maven.ConfigurationManager;
+import org.openoffice.maven.Environment;
 import org.openoffice.maven.utils.VisitableFile;
 
 /**
@@ -106,7 +107,6 @@ public class IdlBuilderMojo extends AbstractMojo {
      * OOo instance to build the extension against.
      * 
      * @parameter
-     * @required
      */
     private File ooo;
 
@@ -114,7 +114,6 @@ public class IdlBuilderMojo extends AbstractMojo {
      * OOo SDK installation where the build tools are located.
      * 
      * @parameter
-     * @required
      */
     private File sdk;
     
@@ -145,10 +144,16 @@ public class IdlBuilderMojo extends AbstractMojo {
                                  MojoFailureException {
 
         try {
+            if (ooo == null) {
+                ooo = Environment.getOfficeHome();
+            }
             ConfigurationManager.setOOo(ooo);
             getLog().info("OpenOffice.org used: " + 
                     ooo.getAbsolutePath());
 
+            if (sdk == null) {
+                sdk = Environment.getOoSdkHome();
+            }
             ConfigurationManager.setSdk(sdk);
             getLog().info("OpenOffice.org SDK used: " + 
                     sdk.getAbsolutePath());

@@ -185,6 +185,7 @@ public class ConfigurationManager {
      *            the OpenOffice.org installation folder.
      */
     public static void setOOo(File pOoo) {
+        assert pOoo != null;
         sOoo = pOoo;
         Environment.setOfficeHome(pOoo);
     }
@@ -196,6 +197,7 @@ public class ConfigurationManager {
      *            the OpenOffice.org SDK installation folder.
      */
     public static void setSdk(File pSdk) {
+        assert pSdk != null;
         sSdk = pSdk;
         Environment.setOoSdkHome(pSdk);
     }
