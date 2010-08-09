@@ -27,6 +27,8 @@ package org.openoffice.maven;
 import java.io.File;
 
 import org.apache.commons.lang.SystemUtils;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 
 /**
  * This class handles the differences between the support OS.
@@ -41,6 +43,7 @@ import org.apache.commons.lang.SystemUtils;
  */
 public final class Environment {
     
+    private static final Log log = new SystemStreamLog();
     private static final String OFFICE_HOME = "OFFICE_HOME";
     private static final String OFFICE_BASE_HOME = "OFFICE_BASE_HOME";
     private static final String OO_SDK_HOME = "OO_SDK_HOME";
@@ -59,11 +62,18 @@ public final class Environment {
             return home;
         }
         if (SystemUtils.IS_OS_LINUX) {
-            return tryDirs("/opt/openoffice.org3", "/usr/lib/openoffice");
-        } if (SystemUtils.IS_OS_MAC) {
-            return tryDirs("/Applications/OpenOffice.org.app", "/opt/ooo/OpenOffice.org.app");
+            home = tryDirs("/opt/openoffice.org3", "/usr/lib/openoffice");
+        } else if (SystemUtils.IS_OS_MAC) {
+            home = tryDirs("/Applications/OpenOffice.org.app", "/opt/ooo/OpenOffice.org.app");
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            home = tryDirs("C:/programs/OpenOffice.org3", "C:/Programme/OpenOffice.org3");
+        } else {
+            home = tryDirs("/opt/openoffice.org3");
         }
-        return null;
+        if (home == null) {
+            log.debug("office home not found - must be set via configuration '<ooo>...</ooo>'");
+        }
+        return home;
     }
     
     private static File guessOoSdkHome() {
@@ -72,11 +82,14 @@ public final class Environment {
             return home;
         }
         if (SystemUtils.IS_OS_LINUX) {
-            return tryDirs("/opt/openoffice.org/basis3.2/sdk", "/usr/lib/openoffice/basis3.2/sdk");
-        } if (SystemUtils.IS_OS_MAC) {
-            return tryDirs("/Applications/OpenOffice.org3.2_SDK", "/opt/ooo/OpenOffice.org3.2_SDK");
+            home = tryDirs("/opt/openoffice.org/basis3.2/sdk", "/usr/lib/openoffice/basis3.2/sdk");
+        } else if (SystemUtils.IS_OS_MAC) {
+            home = tryDirs("/Applications/OpenOffice.org3.2_SDK", "/opt/ooo/OpenOffice.org3.2_SDK");
         }
-        return null;
+        if (home == null) {
+            log.debug("SDK home not found - must be set via configuration '<sdk>...</sdk>'");
+        }
+        return home;
     }
     
     private static File tryDirs(final String... dirnames) {
