@@ -77,7 +77,7 @@ public final class Environment {
     }
     
     private static File guessOoSdkHome() {
-        File home = getenvAsFile(OFFICE_BASE_HOME);
+        File home = getenvAsFile(OO_SDK_HOME);
         if (home != null) {
             return home;
         }
