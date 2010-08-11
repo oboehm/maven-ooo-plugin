@@ -135,6 +135,8 @@ public final class Environment {
         if (officeBaseHome == null) {
             if (SystemUtils.IS_OS_MAC) {
                 officeBaseHome = new File(getOfficeHome(), "Contents/basis-link");
+            } else if (SystemUtils.IS_OS_WINDOWS) {
+                officeBaseHome = new File(getOfficeHome(), "Basis");
             } else {
                 officeBaseHome = new File(getOfficeHome(), "basis-link");
             }
@@ -173,7 +175,11 @@ public final class Environment {
      */
     public static synchronized File getOoSdkUreHome() {
         if (ooSdkUreHome == null) {
-            ooSdkUreHome = new File(getOfficeBaseHome(), "ure-link");
+            if (SystemUtils.IS_OS_WINDOWS) {
+                ooSdkUreHome = getOoSdkHome();
+            } else {
+                ooSdkUreHome = new File(getOfficeBaseHome(), "ure-link");
+            }
         }
         return ooSdkUreHome;
     }
