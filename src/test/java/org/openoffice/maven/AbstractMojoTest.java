@@ -19,6 +19,9 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        if (mojo == null) {
+            throw new IllegalStateException("you must first initialize mojo!");
+        }
         super.setUp();
         AbstractTest.setUpEnvironment();
         this.setUpMojo();
@@ -34,7 +37,7 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
     private void setUpTargetDir() throws IllegalAccessException {
         File buildDir = this.getTargetDir();
         setVariableValueToObject(mojo, "directory", buildDir);
-        setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "test-classes"));
+        setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "ooo"));
     }
     
     /**
