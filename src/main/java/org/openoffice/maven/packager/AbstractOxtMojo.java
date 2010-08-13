@@ -183,6 +183,7 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
 
         try {
             File contentDirectory = getClassesDirectory();
+            assert contentDirectory != null;
             if (!contentDirectory.exists()) {
                 getLog().warn("JAR will be empty - no content was marked for inclusion!");
             } else {

@@ -26,16 +26,11 @@ package org.openoffice.maven.idl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.openoffice.maven.AbstractTest;
-import org.openoffice.maven.Environment;
+import org.openoffice.maven.AbstractMojoTest;
 import org.openoffice.maven.idl.IdlBuilderMojo.PackageNameFilter;
 
 /**
@@ -44,20 +39,15 @@ import org.openoffice.maven.idl.IdlBuilderMojo.PackageNameFilter;
  * @author oliver
  * @since 1.2 (02.08.2010)
  */
-public final class IdlBuilderMojoTest extends AbstractMojoTestCase {
+public final class IdlBuilderMojoTest extends AbstractMojoTest {
     
-    private IdlBuilderMojo mojo = new IdlBuilderMojo();
-
-    /**
-     * Set up the mojo.
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        AbstractTest.setUpEnvironment();
+        this.mojo = new IdlBuilderMojo();
+        super.setUpMojo();
     }
-    
+
     /**
      * This unit test was copied from
      * {@link "http://maven.apache.org/plugin-developers/plugin-testing.html"}.
@@ -92,30 +82,15 @@ public final class IdlBuilderMojoTest extends AbstractMojoTestCase {
      * @throws IOException if "types.rdb" can't be copied
      */
     public void testExecute() throws IllegalAccessException, MojoExecutionException, MojoFailureException, IOException {
-        setVariableValueToObject(mojo, "ooo", Environment.getOfficeHome());
-        setVariableValueToObject(mojo, "sdk", Environment.getOoSdkHome());
-        initIdlDir(mojo);
-        initResources(mojo);
         File buildDir = new File(getBasedir(), "target");
         setVariableValueToObject(mojo, "directory", buildDir);
         setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "test-classes"));
+        File directory = (File) this.getVariableValueFromObject(mojo, "directory");
+        assertEquals(buildDir, directory);
         FileUtils.copyFile(new File("src/test/resources/types.rdb"), new File(buildDir, "types.rdb"));
         mojo.execute();
     }
 
-    private void initIdlDir(IdlBuilderMojo mojo) throws IllegalAccessException {
-        File idlDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/idl");
-        setVariableValueToObject(mojo, "idlDir", idlDir);
-    }
-
-    private void initResources(IdlBuilderMojo mojo) throws IllegalAccessException {
-        List<Resource> resources = new ArrayList<Resource>();
-        Resource rsc = new Resource();
-        rsc.setDirectory("src/test/resources");
-        resources.add(rsc);
-        setVariableValueToObject(mojo, "resources", resources);
-    }
-    
     /**
      * If there is a directory "CVS" inside a package dir this is probably not
      * a package name but a directory from CVS. So we should ignore this
