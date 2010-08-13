@@ -28,11 +28,18 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
         setVariableValueToObject(mojo, "sdk", Environment.getOoSdkHome());
         initIdlDir();
         initResources();
+        initTargetDir();
     }
 
     private void initIdlDir() throws IllegalAccessException {
         File idlDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/idl");
         setVariableValueToObject(mojo, "idlDir", idlDir);
+    }
+    
+    private void initTargetDir() throws IllegalAccessException {
+        File buildDir = new File(getBasedir(), "target");
+        setVariableValueToObject(mojo, "directory", buildDir);
+        setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "test-classes"));
     }
 
     private void initResources() throws IllegalAccessException {

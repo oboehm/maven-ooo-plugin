@@ -82,11 +82,7 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
      * @throws IOException if "types.rdb" can't be copied
      */
     public void testExecute() throws IllegalAccessException, MojoExecutionException, MojoFailureException, IOException {
-        File buildDir = new File(getBasedir(), "target");
-        setVariableValueToObject(mojo, "directory", buildDir);
-        setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "test-classes"));
-        File directory = (File) this.getVariableValueFromObject(mojo, "directory");
-        assertEquals(buildDir, directory);
+        File buildDir = (File) this.getVariableValueFromObject(mojo, "directory");
         FileUtils.copyFile(new File("src/test/resources/types.rdb"), new File(buildDir, "types.rdb"));
         mojo.execute();
     }
