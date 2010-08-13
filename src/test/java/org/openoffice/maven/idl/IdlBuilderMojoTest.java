@@ -56,11 +56,12 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
     /**
      * This unit test was copied from
      * {@link "http://maven.apache.org/plugin-developers/plugin-testing.html"}.
-     * But it does not work. So it is now marked as "broken".
+     * But it does not work with maven-plugin-testing-harness 1.1. You need at
+     * least version 1.2 of this plugin.
      *
      * @throws Exception in case of error
      */
-    public void brokentestMojoGoal() throws Exception {
+    public void testMojoGoal() throws Exception {
         File testPom = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
         IdlBuilderMojo mojo = (IdlBuilderMojo) lookupMojo("build-idl", testPom);
         assertNotNull(mojo);

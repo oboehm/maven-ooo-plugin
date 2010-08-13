@@ -192,6 +192,7 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
             }
 
             File existingManifest = getDefaultManifestFile();
+            assert existingManifest != null;
 
             if (useDefaultManifestFile && existingManifest.exists() && archive.getManifestFile() == null) {
                 getLog().info("Adding existing MANIFEST to archive. Found under: " + existingManifest.getPath());
