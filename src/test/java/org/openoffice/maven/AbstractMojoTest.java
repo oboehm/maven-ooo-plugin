@@ -7,11 +7,11 @@ import java.util.List;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.openoffice.maven.idl.IdlBuilderMojo;
 
 public abstract class AbstractMojoTest extends AbstractMojoTestCase {
 
-    protected AbstractMojo mojo = new IdlBuilderMojo();
+    protected AbstractMojo mojo;
+    protected final File testPom = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
 
     /**
      * Set up the mojo.
@@ -19,15 +19,11 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        if (mojo == null) {
-            throw new IllegalStateException("you must first initialize mojo!");
-        }
         super.setUp();
         AbstractTest.setUpEnvironment();
-        this.setUpMojo();
     }
     
-    private void setUpMojo() throws IllegalAccessException {
+    protected void setUpMojo() throws IllegalAccessException {
         setVariableValueToObject(mojo, "ooo", Environment.getOfficeHome());
         setVariableValueToObject(mojo, "sdk", Environment.getOoSdkHome());
         setUpResources();

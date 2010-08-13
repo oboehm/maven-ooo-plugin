@@ -49,8 +49,9 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
      */
     @Override
     protected void setUp() throws Exception {
-        this.mojo = new IdlBuilderMojo();
         super.setUp();
+        this.mojo = new IdlBuilderMojo();
+        this.setUpMojo();
     }
 
     /**

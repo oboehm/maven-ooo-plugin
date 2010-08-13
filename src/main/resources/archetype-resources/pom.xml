@@ -22,6 +22,12 @@
               <goal>build-idl</goal>
             </goals>
           </execution>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>oxt</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
     </plugins>
