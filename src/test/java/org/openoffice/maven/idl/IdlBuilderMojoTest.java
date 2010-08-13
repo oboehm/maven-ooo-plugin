@@ -46,6 +46,8 @@ import org.openoffice.maven.idl.IdlBuilderMojo.PackageNameFilter;
  */
 public final class IdlBuilderMojoTest extends AbstractMojoTestCase {
     
+    private IdlBuilderMojo mojo = new IdlBuilderMojo();
+
     /**
      * Set up the mojo.
      * 
@@ -76,7 +78,6 @@ public final class IdlBuilderMojoTest extends AbstractMojoTestCase {
      * @throws Exception in case of error
      */
     public void testSettingMojoVariables() throws Exception {
-        IdlBuilderMojo mojo = new IdlBuilderMojo();
         File value = new File("/opt/");
         setVariableValueToObject(mojo, "ooo", value);
         assertEquals(value, (File) getVariableValueFromObject(mojo, "ooo"));
@@ -91,7 +92,6 @@ public final class IdlBuilderMojoTest extends AbstractMojoTestCase {
      * @throws IOException if "types.rdb" can't be copied
      */
     public void testExecute() throws IllegalAccessException, MojoExecutionException, MojoFailureException, IOException {
-        IdlBuilderMojo mojo = new IdlBuilderMojo();
         setVariableValueToObject(mojo, "ooo", Environment.getOfficeHome());
         setVariableValueToObject(mojo, "sdk", Environment.getOoSdkHome());
         initIdlDir(mojo);
@@ -116,6 +116,12 @@ public final class IdlBuilderMojoTest extends AbstractMojoTestCase {
         setVariableValueToObject(mojo, "resources", resources);
     }
     
+    /**
+     * If there is a directory "CVS" inside a package dir this is probably not
+     * a package name but a directory from CVS. So we should ignore this
+     * directory (also package names should be in lower case so we could
+     * safely ignore it).
+     */
     public void testPackageNameFilter() {
         IdlBuilderMojo.PackageNameFilter filter = new PackageNameFilter();
         File dir = new File(getBasedir());
