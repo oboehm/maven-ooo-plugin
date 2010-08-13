@@ -21,28 +21,32 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         AbstractTest.setUpEnvironment();
+        this.setUpMojo();
     }
     
-    protected final void setUpMojo() throws IllegalAccessException {
+    private void setUpMojo() throws IllegalAccessException {
         setVariableValueToObject(mojo, "ooo", Environment.getOfficeHome());
         setVariableValueToObject(mojo, "sdk", Environment.getOoSdkHome());
-        initIdlDir();
-        initResources();
-        initTargetDir();
+        setUpResources();
+        setUpTargetDir();
     }
 
-    private void initIdlDir() throws IllegalAccessException {
-        File idlDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/idl");
-        setVariableValueToObject(mojo, "idlDir", idlDir);
-    }
-    
-    private void initTargetDir() throws IllegalAccessException {
-        File buildDir = new File(getBasedir(), "target");
+    private void setUpTargetDir() throws IllegalAccessException {
+        File buildDir = this.getTargetDir();
         setVariableValueToObject(mojo, "directory", buildDir);
         setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "test-classes"));
     }
+    
+    /**
+     * Gets the target dir.
+     *
+     * @return the target dir
+     */
+    protected File getTargetDir() {
+        return new File(getBasedir(), "target");
+    }
 
-    private void initResources() throws IllegalAccessException {
+    private void setUpResources() throws IllegalAccessException {
         List<Resource> resources = new ArrayList<Resource>();
         Resource rsc = new Resource();
         rsc.setDirectory("src/test/resources");

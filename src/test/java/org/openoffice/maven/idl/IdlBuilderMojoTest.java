@@ -41,11 +41,16 @@ import org.openoffice.maven.idl.IdlBuilderMojo.PackageNameFilter;
  */
 public final class IdlBuilderMojoTest extends AbstractMojoTest {
     
+    /**
+     * Sets up the Mojo.
+     *
+     * @throws Exception the exception
+     * @see org.openoffice.maven.AbstractMojoTest#setUp()
+     */
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
         this.mojo = new IdlBuilderMojo();
-        super.setUpMojo();
+        super.setUp();
     }
 
     /**
@@ -82,9 +87,15 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
      * @throws IOException if "types.rdb" can't be copied
      */
     public void testExecute() throws IllegalAccessException, MojoExecutionException, MojoFailureException, IOException {
-        File buildDir = (File) this.getVariableValueFromObject(mojo, "directory");
+        setUpIdlDir();
+        File buildDir = this.getTargetDir();
         FileUtils.copyFile(new File("src/test/resources/types.rdb"), new File(buildDir, "types.rdb"));
         mojo.execute();
+    }
+
+    private void setUpIdlDir() throws IllegalAccessException {
+        File idlDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/idl");
+        setVariableValueToObject(mojo, "idlDir", idlDir);
     }
 
     /**

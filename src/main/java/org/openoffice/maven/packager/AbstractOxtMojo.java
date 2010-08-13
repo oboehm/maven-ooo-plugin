@@ -177,6 +177,7 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
         File jarFile = getJarFile(outputDirectory, finalName, getClassifier());
 
         MavenArchiver archiver = new MavenArchiver();
+        assert jarArchiver != null;
         archiver.setArchiver(jarArchiver);
         archiver.setOutputFile(jarFile);
         archive.setForced(forceCreation);
