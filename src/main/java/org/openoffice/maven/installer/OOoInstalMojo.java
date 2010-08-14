@@ -3,10 +3,8 @@ package org.openoffice.maven.installer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.maven.artifact.Artifact;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -81,10 +79,18 @@ public class OOoInstalMojo extends AbstractMojo {
 
             getLog().info("Installing plugin to OOo... please wait");
             Process process = ConfigurationManager.runTool(cmd);
+            String message = "";
             { // read std input
-                String message = "";
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line = buffer.readLine();
+                while (null != line) {
+                    message += line + "\n";
+                    line = buffer.readLine();
+                }
+                if (message.length() > 0)
+                    getLog().info(message);
+                buffer = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                line = buffer.readLine();
                 while (null != line) {
                     message += line + "\n";
                     line = buffer.readLine();
@@ -96,13 +102,15 @@ public class OOoInstalMojo extends AbstractMojo {
             int returnCode = process.waitFor();
             boolean success = returnCode == 0;
 
-            if (success)
+            if (success) {
                 getLog().info("Plugin installed successfully");
-            else
-                throw new MojoExecutionException("undpkg renurned in error. Code: " + returnCode);
+            } else {
+                System.out.println("\nRunning: [" + StringUtils.join(cmd, " ") + "]");
+                throw new MojoExecutionException("unopkg renurned in error. Code: " + returnCode + "\n" + //
+                        message);
+            }
         } catch (Exception e) {
             throw new MojoExecutionException("Error while installing package to OOo.", e);
         }
     }
-
 }
