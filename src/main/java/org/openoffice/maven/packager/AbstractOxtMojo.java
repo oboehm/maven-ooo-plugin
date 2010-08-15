@@ -17,17 +17,16 @@ package org.openoffice.maven.packager;
  * under the License.
  */
 
+import java.io.File;
+
 import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
-
-import java.io.File;
 
 /**
  * Base class for creating a jar from project classes.
@@ -37,11 +36,11 @@ import java.io.File;
  */
 public abstract class AbstractOxtMojo extends AbstractMojo {
     
-    private static final Log log = new SystemStreamLog();
-
     private static final String[] DEFAULT_EXCLUDES = new String[] { "**/package.html" };
 
     private static final String[] DEFAULT_INCLUDES = new String[] { "**/**" };
+
+    private final Log log = super.getLog();
 
     /**
      * List of files to include. Specified as fileset patterns.
