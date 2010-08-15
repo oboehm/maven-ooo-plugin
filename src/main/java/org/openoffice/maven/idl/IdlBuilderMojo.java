@@ -120,7 +120,7 @@ public class IdlBuilderMojo extends AbstractMojo {
     /**
      * IDL directory where the IDL sources can be found
      * 
-     * @parameter expression="src/main/idl"
+     * @parameter expression="src/main/resources/idl"
      */
     private File idlDir;
 

@@ -79,6 +79,13 @@ public class OxtMojo extends AbstractOxtMojo {
     private File sdk;
 
     /**
+     * OXT directory where the OXT sources can be found
+     * 
+     * @parameter expression="src/main/resources/oxt"
+     */
+    private File oxtDir;
+
+    /**
      * This is where build results go.
      * 
      * @parameter expression="${project.build.directory}"
@@ -152,7 +159,7 @@ public class OxtMojo extends AbstractOxtMojo {
         ConfigurationManager.setClassesOutput(outputDirectory);
         ConfigurationManager.setResources(resources);
 
-        File oxtDir = ConfigurationManager.getOxtDir();
+        ConfigurationManager.setOxtDir(oxtDir);
         if (oxtDir == null) {
             throw new MojoExecutionException("No OXT folder found among in the resources");
         }
@@ -180,7 +187,7 @@ public class OxtMojo extends AbstractOxtMojo {
             getProject().getArtifact().setFile(oxtFile);
         }
 
-        getLog().warn("OxtMojo not coded yet...");
+        getLog().warn("OxtMojo not finished yet...");
     }
 
 }

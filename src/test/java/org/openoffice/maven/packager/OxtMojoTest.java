@@ -79,7 +79,13 @@ public final class OxtMojoTest extends AbstractMojoTest {
     private void setUpAbstractOxtMojo() throws IllegalAccessException {
         setVariableValueToObject(mojo, "finalName", "testFinalName");
         setVariableValueToObject(mojo, "jarArchiver", new JarArchiver());
+        setUpOxtDir();
         setUpProject4Mojo();
+    }
+    
+    private void setUpOxtDir() throws IllegalAccessException {
+        File oxtDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/oxt");
+        setVariableValueToObject(mojo, "oxtDir", oxtDir);
     }
 
     private void setUpProject4Mojo() throws IllegalAccessException {

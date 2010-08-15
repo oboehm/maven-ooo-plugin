@@ -76,6 +76,8 @@ public class ConfigurationManager {
     
     private static File idlDir;
 
+    private static File oxtDir;
+
     private static File sOutput;
 
     private static File sClassesOutput;
@@ -166,12 +168,25 @@ public class ConfigurationManager {
         }
         return null;
     }
+    
+    /**
+     * Sets the oxt dir.
+     *
+     * @param dir the dir
+     * @return the file
+     */
+    public static synchronized void setOxtDir(final File dir) {
+        oxtDir = dir;
+    }
 
     /**
      * @return the path to the folder containing the IDL files to build or
      *         <code>null</code> if no IDL folder has been found.
      */
     public static synchronized File getOxtDir() {
+        if (oxtDir != null) {
+            return oxtDir;
+        }
         if (sResources != null) {
             return new File(sResources, OXT_DIR);
         }
