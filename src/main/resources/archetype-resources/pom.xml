@@ -8,9 +8,24 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <encoding>utf-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.openoffice.dev</groupId>
         <artifactId>maven-ooo-plugin</artifactId>
         <version>1.0</version>
+        <!-- 
+            the following values can be configured:
+            ooo:    OpenOffice dir
+            sdk:    OpenOffice SDK dir
+            idlDir: IDL source dir
+            oxtDir: OXT source dir
+         -->
         <configuration>
           <ooo></ooo>
           <sdk></sdk>

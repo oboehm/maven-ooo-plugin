@@ -65,18 +65,11 @@ public class ConfigurationManager {
      */
     private static final String IDL_DIR = "idl";
 
-    /**
-     * The path to the OXT directory in the resources directory.
-     */
-    private static final String OXT_DIR = "oxt";
-
     private static File sOoo;
 
     private static File sSdk;
     
     private static File idlDir;
-
-    private static File oxtDir;
 
     private static File sOutput;
 
@@ -169,30 +162,6 @@ public class ConfigurationManager {
         return null;
     }
     
-    /**
-     * Sets the oxt dir.
-     *
-     * @param dir the dir
-     * @return the file
-     */
-    public static synchronized void setOxtDir(final File dir) {
-        oxtDir = dir;
-    }
-
-    /**
-     * @return the path to the folder containing the IDL files to build or
-     *         <code>null</code> if no IDL folder has been found.
-     */
-    public static synchronized File getOxtDir() {
-        if (oxtDir != null) {
-            return oxtDir;
-        }
-        if (sResources != null) {
-            return new File(sResources, OXT_DIR);
-        }
-        return null;
-    }
-
     /**
      * Sets the OpenOffice.org installation folder to use for the build.
      * 

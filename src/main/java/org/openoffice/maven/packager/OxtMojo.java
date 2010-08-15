@@ -159,9 +159,8 @@ public class OxtMojo extends AbstractOxtMojo {
         ConfigurationManager.setClassesOutput(outputDirectory);
         ConfigurationManager.setResources(resources);
 
-        ConfigurationManager.setOxtDir(oxtDir);
         if (oxtDir == null) {
-            throw new MojoExecutionException("No OXT folder found among in the resources");
+            throw new MojoExecutionException("No OXT folder configured");
         }
 
         File oxtFile = new File(outputDirectory, finalName + ".oxt");
