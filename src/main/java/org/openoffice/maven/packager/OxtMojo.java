@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -66,7 +67,6 @@ public class OxtMojo extends AbstractOxtMojo {
      * OOo instance to build the extension against.
      * 
      * @parameter
-     * @required
      */
     private File ooo;
 
@@ -74,7 +74,6 @@ public class OxtMojo extends AbstractOxtMojo {
      * OOo SDK installation where the build tools are located.
      * 
      * @parameter
-     * @required
      */
     private File sdk;
 
@@ -151,9 +150,17 @@ public class OxtMojo extends AbstractOxtMojo {
         super.execute();
 
         // build the oxt package
-        ConfigurationManager.setOOo(ooo);
+        if (ooo == null) {
+            ooo = ConfigurationManager.getOOo();
+        } else {
+            ConfigurationManager.setOOo(ooo);
+        }
         getLog().info("OpenOffice.org used: " + ooo.getAbsolutePath());
-        ConfigurationManager.setSdk(sdk);
+        if (sdk == null) {
+            sdk = ConfigurationManager.getSdk();
+        } else {
+            ConfigurationManager.setSdk(sdk);
+        }
         getLog().info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
         ConfigurationManager.setOutput(directory);
         ConfigurationManager.setClassesOutput(outputDirectory);
