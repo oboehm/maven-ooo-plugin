@@ -25,7 +25,10 @@
 package org.openoffice.maven.packager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.*;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -47,6 +50,7 @@ import org.openoffice.maven.AbstractMojoTest;
 public final class OxtMojoTest extends AbstractMojoTest {
     
     private static final Log log = new SystemStreamLog();
+    private static final String TEST_FINAL_NAME = "testFinalName";
 
     /**
      * Set up the mojo.
@@ -70,7 +74,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
     }
     
     private void setUpAbstractOxtMojo() throws IllegalAccessException {
-        setVariableValueToObject(mojo, "finalName", "testFinalName");
+        setVariableValueToObject(mojo, "finalName", TEST_FINAL_NAME);
         setVariableValueToObject(mojo, "jarArchiver", new JarArchiver());
         setUpOxtDir();
         setUpProject4Mojo();
@@ -123,6 +127,36 @@ public final class OxtMojoTest extends AbstractMojoTest {
         File archive = oxtMojo.createArchive();
         log.info("created archive: " + archive);
         assertTrue(archive + " is not a file", archive.isFile());
+    }
+    
+    /**
+     * We want to exclude "Readme.txt" from the created OXT file. This is
+     * tested here.
+     * <br/>
+     * NOTE: It is marked as broken because we must first prepare UnoPackage
+     *       to handle includes/excludes
+     *
+     * @throws MojoExecutionException the mojo execution exception
+     * @throws MojoFailureException the mojo failure exception
+     * @throws IllegalAccessException the illegal access exception
+     * @throws ZipException the zip exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    public void brokentestExcludes() throws MojoExecutionException, MojoFailureException, IllegalAccessException, ZipException, IOException {
+        String[] excludes = { "README.txt" };
+        setVariableValueToObject(mojo, "excludes", excludes);
+        mojo.execute();
+        File oxtFile = new File(outputDirectory, TEST_FINAL_NAME + ".oxt");
+        assertTrue(oxtFile + " is not a file", oxtFile.isFile());
+        ZipFile zip = new ZipFile(oxtFile);
+        Enumeration<? extends ZipEntry> entries = zip.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+            log.info(entry.getName());
+            if (entry.getName().equals(excludes[0])) {
+                fail(entry.getName() + " should be excluded!");
+            }
+        }
     }
     
 }

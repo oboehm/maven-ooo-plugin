@@ -12,6 +12,7 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
 
     protected AbstractMojo mojo;
     protected final File testPom = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
+    protected final File outputDirectory = new File(getTargetDir(), "ooo");
 
     /**
      * Set up the mojo.
@@ -33,7 +34,7 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
     private void setUpTargetDir() throws IllegalAccessException {
         File buildDir = this.getTargetDir();
         setVariableValueToObject(mojo, "directory", buildDir);
-        setVariableValueToObject(mojo, "outputDirectory", new File(buildDir, "ooo"));
+        setVariableValueToObject(mojo, "outputDirectory", outputDirectory);
     }
     
     /**
