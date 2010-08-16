@@ -46,9 +46,7 @@ package org.openoffice.maven.idl;
 import java.text.MessageFormat;
 
 import org.openoffice.maven.ConfigurationManager;
-import org.openoffice.maven.utils.IVisitable;
-import org.openoffice.maven.utils.IVisitor;
-import org.openoffice.maven.utils.VisitableFile;
+import org.openoffice.maven.utils.*;
 
 /**
  * Visits the URD files and merge them with the <code>types.rdb</code> file.

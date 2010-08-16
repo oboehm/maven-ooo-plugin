@@ -144,19 +144,11 @@ public class IdlBuilderMojo extends AbstractMojo {
                                  MojoFailureException {
 
         try {
-            if (ooo == null) {
-                ooo = Environment.getOfficeHome();
-            }
-            ConfigurationManager.setOOo(ooo);
-            getLog().info("OpenOffice.org used: " + 
-                    ooo.getAbsolutePath());
+            ooo = ConfigurationManager.initOOo(ooo);
+            getLog().info("OpenOffice.org used: " + ooo.getAbsolutePath());
 
-            if (sdk == null) {
-                sdk = Environment.getOoSdkHome();
-            }
-            ConfigurationManager.setSdk(sdk);
-            getLog().info("OpenOffice.org SDK used: " + 
-                    sdk.getAbsolutePath());
+            sdk = ConfigurationManager.initSdk(sdk);
+            getLog().info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
             
             ConfigurationManager.setIdlDir(idlDir);
             getLog().info("idlDir used: " + idlDir.getAbsolutePath());

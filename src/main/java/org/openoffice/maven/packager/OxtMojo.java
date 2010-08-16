@@ -28,11 +28,8 @@
 package org.openoffice.maven.packager;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -150,17 +147,9 @@ public class OxtMojo extends AbstractOxtMojo {
         super.execute();
 
         // build the oxt package
-        if (ooo == null) {
-            ooo = ConfigurationManager.getOOo();
-        } else {
-            ConfigurationManager.setOOo(ooo);
-        }
+        ooo = ConfigurationManager.initOOo(ooo);
         getLog().info("OpenOffice.org used: " + ooo.getAbsolutePath());
-        if (sdk == null) {
-            sdk = ConfigurationManager.getSdk();
-        } else {
-            ConfigurationManager.setSdk(sdk);
-        }
+        sdk = ConfigurationManager.initSdk(sdk);
         getLog().info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
         ConfigurationManager.setOutput(directory);
         ConfigurationManager.setClassesOutput(outputDirectory);

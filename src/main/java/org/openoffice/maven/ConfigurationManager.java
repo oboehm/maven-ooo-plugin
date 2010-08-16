@@ -29,9 +29,7 @@ package org.openoffice.maven;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -85,6 +83,32 @@ public class ConfigurationManager {
             sOoo = Environment.getOfficeHome();
         }
         return sOoo;
+    }
+    
+    /**
+     * Sets the OpenOffice.org installation folder to use for the build.
+     * 
+     * @param pOoo
+     *            the OpenOffice.org installation folder.
+     */
+    public static void setOOo(File pOoo) {
+        assert pOoo != null;
+        sOoo = pOoo;
+        Environment.setOfficeHome(pOoo);
+    }
+    
+    /**
+     * The office home attribute is initialized with the given dir parameter if
+     * it is set.
+     *
+     * @param dir the init value for office home
+     * @return the office home directory
+     */
+    public static File initOOo(final File dir) {
+        if (dir != null) {
+            setOOo(dir);
+        }
+        return getOOo();
     }
 
     /**
@@ -161,18 +185,6 @@ public class ConfigurationManager {
         }
         return null;
     }
-    
-    /**
-     * Sets the OpenOffice.org installation folder to use for the build.
-     * 
-     * @param pOoo
-     *            the OpenOffice.org installation folder.
-     */
-    public static void setOOo(File pOoo) {
-        assert pOoo != null;
-        sOoo = pOoo;
-        Environment.setOfficeHome(pOoo);
-    }
 
     /**
      * Sets the OpenOffice.org SDK installation folder to use for the build.
@@ -184,6 +196,20 @@ public class ConfigurationManager {
         assert pSdk != null;
         sSdk = pSdk;
         Environment.setOoSdkHome(pSdk);
+    }
+    
+    /**
+     * The SDK attribute is initialized with the given dir parameter if
+     * it is set.
+     *
+     * @param dir the init value for the SDK
+     * @return the SDK directory
+     */
+    public static File initSdk(final File dir) {
+        if (dir != null) {
+            setSdk(dir);
+        }
+        return getSdk();
     }
 
     /**

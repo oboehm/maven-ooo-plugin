@@ -43,16 +43,11 @@
  ************************************************************************/
 package org.openoffice.maven.idl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.MessageFormat;
 
 import org.openoffice.maven.ConfigurationManager;
-import org.openoffice.maven.utils.ErrorReader;
-import org.openoffice.maven.utils.IVisitable;
-import org.openoffice.maven.utils.IVisitor;
-import org.openoffice.maven.utils.VisitableFile;
+import org.openoffice.maven.utils.*;
 
 /**
  * Visits all the IDL files and build them.
