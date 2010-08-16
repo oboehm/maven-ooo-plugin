@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.*;
 import org.openoffice.maven.ConfigurationManager;
-import org.openoffice.maven.Environment;
 import org.openoffice.maven.utils.VisitableFile;
 
 /**

@@ -32,6 +32,8 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.openoffice.maven.AbstractMojoTest;
@@ -43,6 +45,8 @@ import org.openoffice.maven.AbstractMojoTest;
  * @since 1.1.1 (13.08.2010)
  */
 public final class OxtMojoTest extends AbstractMojoTest {
+    
+    private static final Log log = new SystemStreamLog();
 
     /**
      * Set up the mojo.
@@ -54,17 +58,6 @@ public final class OxtMojoTest extends AbstractMojoTest {
         mojo = (OxtMojo) lookupMojo("oxt", testPom);
         assertNotNull(mojo);
         this.setUpMojo();
-    }
-    
-    /**
-     * Test method for {@link tOxtMojo#execute()}.
-     *
-     * @throws MojoExecutionException the mojo execution exception
-     * @throws MojoFailureException the mojo failure exception
-     * @throws IllegalAccessException the illegal access exception
-     */
-    public void testExecute() throws MojoExecutionException, MojoFailureException, IllegalAccessException {
-        mojo.execute();
     }
     
     protected void setUpMojo() throws IllegalAccessException {
@@ -108,5 +101,28 @@ public final class OxtMojoTest extends AbstractMojoTest {
             throw new AssertionError(e);
         }
     }
-
+    
+    /**
+     * Test method for {@link tOxtMojo#execute()}.
+     *
+     * @throws MojoExecutionException the mojo execution exception
+     * @throws MojoFailureException the mojo failure exception
+     * @throws IllegalAccessException the illegal access exception
+     */
+    public void testExecute() throws MojoExecutionException, MojoFailureException, IllegalAccessException {
+        mojo.execute();
+    }
+    
+    /**
+     * Test create archive - just to see what happens.
+     *
+     * @throws MojoExecutionException the mojo execution exception
+     */
+    public void testCreateArchive() throws MojoExecutionException {
+        OxtMojo oxtMojo = (OxtMojo) mojo;
+        File archive = oxtMojo.createArchive();
+        log.info("created archive: " + archive);
+        assertTrue(archive + " is not a file", archive.isFile());
+    }
+    
 }
