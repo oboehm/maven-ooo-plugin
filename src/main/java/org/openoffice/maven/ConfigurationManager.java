@@ -360,8 +360,7 @@ public class ConfigurationManager {
         b.redirectErrorStream(true);
 
          log.debug("\nRunning: [" + StringUtils.join(cmd, " ") +
-         "] \nwith env [" + StringUtils.join(env, " ")
-         + "] \nin dir [" + oooLibs + "]");
+         "] \nwith env [" + StringUtils.join(env, " ") + "]");
 
         Process process = b.start();
         check(process, cmd[2]);
