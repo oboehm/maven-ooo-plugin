@@ -281,7 +281,7 @@ public class ConfigurationManager {
     public static Process runTool(String[] pCommand) throws Exception {
 
         String os = System.getProperty("os.name").toLowerCase();
-        String path_sep = System.getProperty("path.separator");
+        String pathSep = System.getProperty("path.separator");
 
         String[] env = new String[0];
         String[] cmd = new String[2 + pCommand.length];
@@ -293,7 +293,8 @@ public class ConfigurationManager {
             // Windows environment
             env = new String[1];
             oooLibs = new File(getOOo(), "/program");
-            env[0] = "PATH=" + sdkBin + path_sep + oooLibs.getCanonicalPath();
+            env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir() + pathSep
+                    + oooLibs.getCanonicalPath();
             if (os.startsWith("windows 9")) {
                 cmd[0] = "command.com";
             } else {
@@ -305,14 +306,14 @@ public class ConfigurationManager {
             // MacOS environment
             env = new String[2];
             oooLibs = Environment.getOoSdkUreLibDir();
-            env[0] = "PATH=" + sdkBin + ":" + Environment.getOoSdkUreBinDir();
+            env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir();
             env[1] = "DYLD_LIBRARY_PATH=" + oooLibs.getCanonicalPath();
             cmd = getCmd4Unix(pCommand);
         } else {
             // *NIX environment
             env = new String[2];
             oooLibs = new File(getOOo(), "/program");
-            env[0] = "PATH=" + sdkBin + ":" + Environment.getOoSdkUreBinDir();
+            env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir();
             env[1] = "LD_LIBRARY_PATH=" + oooLibs.getCanonicalPath();
             cmd = getCmd4Unix(pCommand);
         }
@@ -350,7 +351,7 @@ public class ConfigurationManager {
                             }
                         }
                     }
-                    e.put(key, e.get(key) + path_sep + value);
+                    e.put(key, e.get(key) + pathSep + value);
                 } else {
                     e.put(key, value);
                 }
