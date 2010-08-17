@@ -142,7 +142,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
      * @throws ZipException the zip exception
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void brokentestExcludes() throws MojoExecutionException, MojoFailureException, IllegalAccessException, ZipException, IOException {
+    public void testExcludes() throws MojoExecutionException, MojoFailureException, IllegalAccessException, ZipException, IOException {
         String[] excludes = { "README.txt" };
         setVariableValueToObject(mojo, "excludes", excludes);
         mojo.execute();

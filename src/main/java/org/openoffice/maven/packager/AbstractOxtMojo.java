@@ -36,9 +36,9 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
  */
 public abstract class AbstractOxtMojo extends AbstractMojo {
     
-    private static final String[] DEFAULT_EXCLUDES = new String[] { "**/package.html", "**/CVS" };
+    private static final String[] DEFAULT_EXCLUDES = new String[] { "**/package.html", "CVS", "**/CVS" };
 
-    private static final String[] DEFAULT_INCLUDES = new String[] { "**/**" };
+    private static final String[] DEFAULT_INCLUDES = new String[] { };
 
     private final Log log = super.getLog();
 
