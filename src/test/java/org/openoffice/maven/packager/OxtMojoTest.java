@@ -81,7 +81,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
     }
     
     private void setUpOxtDir() throws IllegalAccessException {
-        File oxtDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/oxt");
+        File oxtDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/oxt");
         setVariableValueToObject(mojo, "oxtDir", oxtDir);
     }
 

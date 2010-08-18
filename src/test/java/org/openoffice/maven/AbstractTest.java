@@ -25,10 +25,6 @@
 package org.openoffice.maven;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.maven.model.Resource;
 
 /**
  * This class is needed to set up the environment for OpenOffice.
@@ -52,11 +48,7 @@ public class AbstractTest {
     }
     
     private static void setIdlDir() {
-        List<Resource> resources = new ArrayList<Resource>();
-        Resource rsc = new Resource();
-        rsc.setDirectory("src/main/resources/archetype-resources/src/main/resources");
-        resources.add(rsc);
-        ConfigurationManager.setResources(resources);
+        ConfigurationManager.setIdlDir(new File("src/main/resources/archetype-resources/src/main/idl"));
     }
 
 }

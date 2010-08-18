@@ -46,10 +46,8 @@ package org.openoffice.maven.idl;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.*;
 import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.maven.utils.VisitableFile;
@@ -85,15 +83,6 @@ public class IdlBuilderMojo extends AbstractMojo {
     private File directory;
 
     /**
-     * This is where the resources are located.
-     *
-     * @parameter expression="${project.resources}"
-     * @required
-     * @readonly
-     */
-    private List<Resource> resources;
-
-    /**
      * This is where compiled classes go.
      *
      * @parameter expression="${project.build.outputDirectory}"
@@ -119,7 +108,7 @@ public class IdlBuilderMojo extends AbstractMojo {
     /**
      * IDL directory where the IDL sources can be found
      * 
-     * @parameter expression="src/main/resources/idl"
+     * @parameter expression="src/main/resources"
      */
     private File idlDir;
 
@@ -154,7 +143,6 @@ public class IdlBuilderMojo extends AbstractMojo {
 
             ConfigurationManager.setOutput(directory);
             ConfigurationManager.setClassesOutput(outputDirectory);
-            ConfigurationManager.setResources(resources);
             
             // Check if the IDL folder is present
             File idlDir = ConfigurationManager.getIdlDir();

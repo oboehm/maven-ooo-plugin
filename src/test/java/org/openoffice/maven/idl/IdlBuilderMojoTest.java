@@ -96,7 +96,7 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
     }
 
     private void setUpIdlDir() throws IllegalAccessException {
-        File idlDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/resources/idl");
+        File idlDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/idl");
         setVariableValueToObject(mojo, "idlDir", idlDir);
     }
 

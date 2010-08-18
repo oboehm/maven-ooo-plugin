@@ -43,7 +43,7 @@ public class IdlcVisitorTest extends AbstractTest {
     @Test
     public void testRunIdlcOnFile() throws Exception {
         VisitableFile idlFile = new VisitableFile(
-                "src/main/resources/archetype-resources/src/main/resources/idl/hello/WorldInterface.idl");
+                "src/main/resources/archetype-resources/src/main/idl/hello/WorldInterface.idl");
         assertTrue(idlFile.getAbsoluteFile() + " not found", idlFile.exists());
         IdlcVisitor.runIdlcOnFile(idlFile);
     }

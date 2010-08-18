@@ -29,12 +29,11 @@ package org.openoffice.maven;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.openoffice.maven.utils.ErrorReader;
@@ -72,8 +71,6 @@ public class ConfigurationManager {
     private static File sOutput;
 
     private static File sClassesOutput;
-
-    private static File sResources;
 
     /**
      * @return the folder where OpenOffice.org is installed.
@@ -177,13 +174,13 @@ public class ConfigurationManager {
      *         <code>null</code> if no IDL folder has been found.
      */
     public static synchronized File getIdlDir() {
-        if (idlDir != null) {
-            return idlDir;
+        if (idlDir == null) {
+            File dir = new File("src/main/", IDL_DIR);
+            if (dir.isDirectory()) {
+                idlDir = dir;
+            }
         }
-        if (sResources != null) {
-            return new File(sResources, IDL_DIR);
-        }
-        return null;
+        return idlDir;
     }
 
     /**
@@ -239,35 +236,6 @@ public class ConfigurationManager {
      */
     public static void setClassesOutput(File pOutputDirectory) {
         sClassesOutput = pOutputDirectory;
-    }
-
-    /**
-     * Sets the directory containing the project resources.
-     * <p>
-     * The first resource directory containing and idl sub-folder is stored. All
-     * the other ones will not be taken into account.
-     * </p>
-     * 
-     * @param pResources
-     *            the project resources configuration.
-     */
-    public static synchronized void setResources(List<Resource> pResources) {
-        Iterator<Resource> iter = pResources.iterator();
-
-        boolean found = false;
-        while (iter.hasNext() && !found) {
-            Resource resource = iter.next();
-            File resDir = new File(resource.getDirectory());
-
-            if (resDir.exists() && resDir.isDirectory()) {
-                // Look for the IDL folder
-                File potentialIdlDir = new File(resDir, IDL_DIR);
-                if (potentialIdlDir.exists() && potentialIdlDir.isDirectory()) {
-                    sResources = resDir;
-                    found = true;
-                }
-            }
-        }
     }
 
     public static Process runTool(String pCommand) throws Exception {

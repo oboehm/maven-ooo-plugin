@@ -31,7 +31,6 @@ import java.io.File;
 import java.util.*;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.plugin.core.model.UnoPackage;
@@ -52,15 +51,6 @@ public class OxtMojo extends AbstractOxtMojo {
     private List<Artifact> attachedArtifacts;
 
     /**
-     * This is where the resources are located.
-     * 
-     * @parameter expression="${project.resources}"
-     * @required
-     * @readonly
-     */
-    private List<Resource> resources;
-
-    /**
      * OOo instance to build the extension against.
      * 
      * @parameter
@@ -77,7 +67,7 @@ public class OxtMojo extends AbstractOxtMojo {
     /**
      * OXT directory where the OXT sources can be found
      * 
-     * @parameter expression="src/main/resources/oxt"
+     * @parameter expression="src/main/resources"
      */
     private File oxtDir;
 
@@ -153,7 +143,6 @@ public class OxtMojo extends AbstractOxtMojo {
         getLog().info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
         ConfigurationManager.setOutput(directory);
         ConfigurationManager.setClassesOutput(outputDirectory);
-        ConfigurationManager.setResources(resources);
 
         if (oxtDir == null) {
             throw new MojoExecutionException("No OXT folder configured");
