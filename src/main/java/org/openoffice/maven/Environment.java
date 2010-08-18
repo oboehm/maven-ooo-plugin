@@ -67,6 +67,7 @@ public final class Environment {
             home = tryDirs("/Applications/OpenOffice.org.app", "/opt/ooo/OpenOffice.org.app");
         } else if (SystemUtils.IS_OS_WINDOWS) {
             home = tryDirs("C:/programs/OpenOffice.org3", "C:/Programme/OpenOffice.org3",
+                    "C:/programs/OpenOffice.org 3", "C:/Programme/OpenOffice.org 3",
                     "C:/Program Files (x86)/OpenOffice.org 3");
         } else {
             home = tryDirs("/opt/openoffice.org3");
