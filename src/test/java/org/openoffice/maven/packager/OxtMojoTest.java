@@ -28,7 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -121,8 +123,10 @@ public final class OxtMojoTest extends AbstractMojoTest {
      * Test create archive - just to see what happens.
      *
      * @throws MojoExecutionException the mojo execution exception
+     * @throws ZipException the zip exception
+     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void testCreateArchive() throws MojoExecutionException {
+    public void testCreateArchive() throws MojoExecutionException, ZipException, IOException {
         OxtMojo oxtMojo = (OxtMojo) mojo;
         File archive = oxtMojo.createArchive();
         log.info("created archive: " + archive);
@@ -147,16 +151,31 @@ public final class OxtMojoTest extends AbstractMojoTest {
         setVariableValueToObject(mojo, "excludes", excludes);
         mojo.execute();
         File oxtFile = new File(outputDirectory, TEST_FINAL_NAME + ".oxt");
-        assertTrue(oxtFile + " is not a file", oxtFile.isFile());
+        checkArchive(oxtFile);
         ZipFile zip = new ZipFile(oxtFile);
         Enumeration<? extends ZipEntry> entries = zip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
-            log.info(entry.getName());
             if (entry.getName().equals(excludes[0])) {
                 fail(entry.getName() + " should be excluded!");
             }
         }
     }
     
+    private void checkArchive(final File archive) throws ZipException, IOException {
+        assertTrue(archive + " is not a file", archive.isFile());
+        boolean hasManifest = false;
+        ZipFile zip = new ZipFile(archive);
+        Enumeration<? extends ZipEntry> entries = zip.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+            log.debug("entry: " + entry);
+            String entryName = entry.getName();
+            if (entryName.equals("META-INF/manifest.xml")) {
+                hasManifest = true;
+            }
+        }
+        assertTrue("no manifest inside", hasManifest);
+    }
+
 }
