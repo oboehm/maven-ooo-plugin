@@ -24,14 +24,15 @@
 
 package org.openoffice.maven.packager;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.versioning.VersionRange;
@@ -53,6 +54,8 @@ public final class OxtMojoTest extends AbstractMojoTest {
     
     private static final Log log = new SystemStreamLog();
     private static final String TEST_FINAL_NAME = "testFinalName";
+    private static final File OXT_DIR = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/oxt");
+    private static final File OXT_FILE = new File(OUTPUT_DIRECTORY, TEST_FINAL_NAME + ".oxt");
 
     /**
      * Set up the mojo.
@@ -61,7 +64,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        mojo = (OxtMojo) lookupMojo("oxt", testPom);
+        mojo = (OxtMojo) lookupMojo("oxt", TEST_POM);
         assertNotNull(mojo);
         this.setUpMojo();
     }
@@ -70,7 +73,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
         super.setUpMojo();
         setUpAbstractOxtMojo();
         setVariableValueToObject(mojo, "attachedArtifacts", new ArrayList<Artifact>());
-        File classesDir = new File(this.getTargetDir(), "classes");
+        File classesDir = new File(getTargetDir(), "classes");
         setVariableValueToObject(mojo, "classesDirectory", classesDir);
         setVariableValueToObject(mojo, "defaultManifestFile", new File(classesDir, "META-INF/MANIFEST.MF"));
     }
@@ -83,8 +86,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
     }
     
     private void setUpOxtDir() throws IllegalAccessException {
-        File oxtDir = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/oxt");
-        setVariableValueToObject(mojo, "oxtDir", oxtDir);
+        setVariableValueToObject(mojo, "oxtDir", OXT_DIR);
     }
 
     private void setUpProject4Mojo() throws IllegalAccessException {
@@ -150,9 +152,8 @@ public final class OxtMojoTest extends AbstractMojoTest {
         String[] excludes = { "README.txt" };
         setVariableValueToObject(mojo, "excludes", excludes);
         mojo.execute();
-        File oxtFile = new File(outputDirectory, TEST_FINAL_NAME + ".oxt");
-        checkArchive(oxtFile);
-        ZipFile zip = new ZipFile(oxtFile);
+        checkArchive();
+        ZipFile zip = new ZipFile(OXT_FILE);
         Enumeration<? extends ZipEntry> entries = zip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
@@ -162,20 +163,54 @@ public final class OxtMojoTest extends AbstractMojoTest {
         }
     }
     
-    private void checkArchive(final File archive) throws ZipException, IOException {
-        assertTrue(archive + " is not a file", archive.isFile());
-        boolean hasManifest = false;
-        ZipFile zip = new ZipFile(archive);
-        Enumeration<? extends ZipEntry> entries = zip.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = entries.nextElement();
-            log.debug("entry: " + entry);
-            String entryName = entry.getName();
-            if (entryName.equals("META-INF/manifest.xml")) {
-                hasManifest = true;
-            }
+    /**
+     * Test manifest recognition. If there is already a manifest file available
+     * this one should be used.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IllegalAccessException the illegal access exception
+     * @throws MojoExecutionException the mojo execution exception
+     * @throws MojoFailureException the mojo failure exception
+     */
+    public void testManifestRecognition() throws IOException, IllegalAccessException, MojoExecutionException,
+            MojoFailureException {
+        String manifestContent = "<Test-Manifest/>";
+        File testDir = createOxtDirWithManifest(manifestContent);
+        setVariableValueToObject(mojo, "oxtDir", testDir);
+        mojo.execute();
+        checkArchive();
+        String content = getManifestContent();
+        assertEquals(manifestContent, content);
+    }
+
+    private static File createOxtDirWithManifest(String manifestContent) throws IOException {
+        File testDir = new File(OUTPUT_DIRECTORY, "oxt");
+        FileUtils.copyDirectory(OXT_DIR, testDir);
+        File metaInfDir = new File(testDir, "META-INF");
+        metaInfDir.mkdir();
+        assertTrue(metaInfDir.getAbsolutePath(), metaInfDir.isDirectory());
+        File manifestFile = new File(metaInfDir, "manifest.xml");
+        FileUtils.writeStringToFile(manifestFile, manifestContent);
+        return testDir;
+    }
+    
+    private static void checkArchive() throws ZipException, IOException {
+        assertTrue(OXT_FILE + " is not a file", OXT_FILE.isFile());
+        ZipFile zip = new ZipFile(OXT_FILE);
+        ZipEntry entry = zip.getEntry("META-INF/manifest.xml");
+        assertNotNull("no manifest inside", entry);
+        zip.close();
+    }
+    
+    private static String getManifestContent() throws ZipException, IOException {
+        ZipFile zip = new ZipFile(OXT_FILE);
+        try {
+            ZipEntry entry = zip.getEntry("META-INF/manifest.xml");
+            InputStream istream = zip.getInputStream(entry);
+            return IOUtils.toString(istream);
+        } finally {
+            zip.close();
         }
-        assertTrue("no manifest inside", hasManifest);
     }
 
 }

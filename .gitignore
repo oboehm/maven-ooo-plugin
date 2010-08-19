@@ -4,3 +4,6 @@ target
 bin/target
 /target-eclipse
 /target
+/maven-archiver
+/target
+/target-eclipse

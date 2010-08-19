@@ -7,9 +7,9 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
 public abstract class AbstractMojoTest extends AbstractMojoTestCase {
 
+    protected static final File TEST_POM = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
+    protected static final File OUTPUT_DIRECTORY = new File(getTargetDir(), "ooo");
     protected AbstractMojo mojo;
-    protected final File testPom = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
-    protected final File outputDirectory = new File(getTargetDir(), "ooo");
 
     /**
      * Set up the mojo.
@@ -28,9 +28,9 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
     }
 
     private void setUpTargetDir() throws IllegalAccessException {
-        File buildDir = this.getTargetDir();
+        File buildDir = getTargetDir();
         setVariableValueToObject(mojo, "directory", buildDir);
-        setVariableValueToObject(mojo, "outputDirectory", outputDirectory);
+        setVariableValueToObject(mojo, "outputDirectory", OUTPUT_DIRECTORY);
     }
     
     /**
@@ -38,7 +38,7 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
      *
      * @return the target dir
      */
-    protected File getTargetDir() {
+    protected static File getTargetDir() {
         return new File(getBasedir(), "target");
     }
 
