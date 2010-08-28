@@ -255,14 +255,15 @@ public class ConfigurationManager {
         String[] cmd = new String[2 + pCommand.length];
         File oooLibs;
 
-        String sdkBin = getSdkBinPath(getSdk().getPath());
+        String sdkBin = getSdkBinPath();
+        String oooBin = getOOoBinPath();
 
         if (os.startsWith("windows")) {
             // Windows environment
             env = new String[1];
             oooLibs = new File(getOOo(), "/program");
             env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir() + pathSep
-                    + oooLibs.getCanonicalPath();
+                    + oooBin + pathSep + oooLibs.getCanonicalPath();
             if (os.startsWith("windows 9")) {
                 cmd[0] = "command.com";
             } else {
@@ -274,14 +275,14 @@ public class ConfigurationManager {
             // MacOS environment
             env = new String[2];
             oooLibs = Environment.getOoSdkUreLibDir();
-            env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir();
+            env[0] = "PATH=" + sdkBin + pathSep + oooBin + pathSep + Environment.getOoSdkUreBinDir();
             env[1] = "DYLD_LIBRARY_PATH=" + oooLibs.getCanonicalPath();
             cmd = getCmd4Unix(pCommand);
         } else {
             // *NIX environment
             env = new String[2];
             oooLibs = new File(getOOo(), "/program");
-            env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir();
+            env[0] = "PATH=" + sdkBin + pathSep + oooBin + pathSep + Environment.getOoSdkUreBinDir();
             env[1] = "LD_LIBRARY_PATH=" + oooLibs.getCanonicalPath();
             cmd = getCmd4Unix(pCommand);
         }
@@ -364,22 +365,21 @@ public class ConfigurationManager {
      *            the OpenOffice.org SDK home
      * @return the full path to the SDK binaries
      */
-    private static String getSdkBinPath(String pHome) {
-        String path = null;
-
+    private static String getSdkBinPath() {
+        File sdkHome = Environment.getOoSdkHome();
         // OOo SDK does not seems to include th target os in their packaging
         // anymore. Tested with 3.2.0
-        path = "/bin";
-        if (new File(pHome, path).exists())
-            return new File(pHome, path).getPath();
+        String path = "/bin";
+        if (new File(sdkHome, path).exists()) {
+            return new File(sdkHome, path).getPath();
+        }
 
-        // Get the OS and Architecture properties
-        String os = System.getProperty("os.name").toLowerCase();
+        // Get the Architecture properties
         String arch = System.getProperty("os.arch").toLowerCase();
 
-        if (os.startsWith("windows")) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             path = "/windows/bin/";
-        } else if (os.equals("solaris")) {
+        } else if (SystemUtils.IS_OS_SOLARIS) {
             if (arch.equals("sparc")) {
                 path = "/solsparc/bin";
             } else {
@@ -391,7 +391,22 @@ public class ConfigurationManager {
             path = "/linux/bin";
         }
 
-        return new File(pHome, path).getPath();
+        return new File(sdkHome, path).getPath();
     }
     
+    /**
+     * Returns the path to the OOO binaries depending on the OS and the
+     * architecture.
+     * 
+     * @return the full path to the OOo binaries
+     */
+    private static String getOOoBinPath() {
+        File oooHome = Environment.getOfficeHome();
+        File binDir = new File(oooHome, "program");
+        if (SystemUtils.IS_OS_MAC) {
+            binDir = new File(oooHome, "Contents/MacOS");
+        }
+        return binDir.getAbsolutePath();
+    }
+
 }

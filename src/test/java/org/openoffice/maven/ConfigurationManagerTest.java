@@ -30,8 +30,8 @@ import java.io.File;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 
@@ -43,7 +43,7 @@ import org.junit.Test;
  */
 public final class ConfigurationManagerTest extends AbstractTest {
     
-    private static final Log log = new SystemStreamLog();
+    private static final Log log = LogFactory.getLog(ConfigurationManagerTest.class);
     
 //    /**
 //     * The path to OpenOffice home is set up here. At the moment this is
@@ -113,6 +113,22 @@ public final class ConfigurationManagerTest extends AbstractTest {
         log.info("running 'regmerge -h'...");
         try {
             ConfigurationManager.runTool("regmerge", "-h");
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            assertTrue(msg, msg.contains("unknown option"));
+        }
+    }
+
+    /**
+     * Test method for {@link ConfigurationManager#runTool(String)} with the
+     * unopkg command. 'unopkg' is normally placed in the search path of OOo
+     * (and not the OOo SDK).
+     */
+    @Test
+    public synchronized void testRunUnopkg() {
+        log.info("running 'unopkg -V'...");
+        try {
+            ConfigurationManager.runTool("unopkg", "-V");
         } catch (Exception e) {
             String msg = e.getMessage();
             assertTrue(msg, msg.contains("unknown option"));
