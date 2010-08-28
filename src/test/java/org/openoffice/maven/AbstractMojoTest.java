@@ -29,11 +29,6 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
         AbstractTest.setUpEnvironment();
     }
     
-    protected void setUpMojo() throws IllegalAccessException {
-        setVariableValueToObject(mojo, "ooo", Environment.getOfficeHome());
-        setVariableValueToObject(mojo, "sdk", Environment.getOoSdkHome());
-    }
-
     protected void setUpTargetDir() throws IllegalAccessException {
         File buildDir = getTargetDir();
         setVariableValueToObject(mojo, "directory", buildDir);

@@ -52,7 +52,6 @@ public class OOoUninstalMojoTest extends AbstractMojoTest {
         super.setUp();
         mojo = (AbstractMojo) lookupMojo("uninstall", TEST_POM);
         assertNotNull(mojo);
-        this.setUpMojo();
         Artifact artifact = createArtifact();
         List<Artifact> artifacts = new ArrayList<Artifact>(1);
         artifacts.add(artifact);

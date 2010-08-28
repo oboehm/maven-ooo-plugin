@@ -53,7 +53,6 @@ public class OOoInstalMojoTest extends AbstractMojoTest {
         super.setUp();
         mojo = (AbstractMojo) lookupMojo(phase, TEST_POM);
         assertNotNull(mojo);
-        this.setUpMojo();
         this.setUpProject4Mojo();
     }
 

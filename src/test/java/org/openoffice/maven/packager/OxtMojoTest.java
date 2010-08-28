@@ -65,7 +65,6 @@ public final class OxtMojoTest extends AbstractMojoTest {
     }
     
     protected void setUpMojo() throws IllegalAccessException {
-        super.setUpMojo();
         this.setUpTargetDir();
         setUpAbstractOxtMojo();
         setVariableValueToObject(mojo, "attachedArtifacts", new ArrayList<Artifact>());

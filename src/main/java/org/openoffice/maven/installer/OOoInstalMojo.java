@@ -49,11 +49,11 @@ public class OOoInstalMojo extends AbstractMojo {
      *             if the packaging can't be done.
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
-        ConfigurationManager.setOOo(ooo);
-        getLog().debug("OpenOffice.org used: " + ooo.getAbsolutePath());
+        ooo = ConfigurationManager.initOOo(ooo);
+        getLog().info("OpenOffice.org used: " + ooo.getAbsolutePath());
 
-        ConfigurationManager.setSdk(sdk);
-        getLog().debug("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
+        sdk = ConfigurationManager.initSdk(sdk);
+        getLog().info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
 
         File unoPluginFile = project.getArtifact().getFile();
         if (!unoPluginFile.exists()) {

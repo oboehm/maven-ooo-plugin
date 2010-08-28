@@ -51,7 +51,6 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
     protected void setUp() throws Exception {
         super.setUp();
         this.mojo = new IdlBuilderMojo();
-        this.setUpMojo();
         this.setUpTargetDir();
     }
 
