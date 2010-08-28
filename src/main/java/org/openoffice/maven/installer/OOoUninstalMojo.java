@@ -38,8 +38,7 @@ public class OOoUninstalMojo extends AbstractMojo {
     private File sdk;
 
     /**
-     * <p>This method install an openoffice plugin package to the specified
-     * openoffice installation</p>
+     * <p>This method uninstall an openoffice plugin package.</p>
      * 
      * @throws MojoExecutionException
      *             if there is a problem during the packaging execution.
@@ -55,7 +54,8 @@ public class OOoUninstalMojo extends AbstractMojo {
 
         Artifact unoPlugin = null;
         for (Artifact attachedArtifact : attachedArtifacts) {
-            if ("zip".equals(FilenameUtils.getExtension(attachedArtifact.getFile().getPath()))) {
+            String extension = FilenameUtils.getExtension(attachedArtifact.getFile().getPath());
+            if ("zip".equals(extension) || "oxt".equals(extension)) {
                 unoPlugin = attachedArtifact;
                 break;
             }
@@ -77,7 +77,7 @@ public class OOoUninstalMojo extends AbstractMojo {
                     unoPluginFile.getCanonicalPath(), //
             };
 
-            getLog().info("Installing plugin to OOo... please wait");
+            getLog().info("Uninstalling plugin to OOo... please wait");
             Process process = ConfigurationManager.runTool(cmd);
             { // read std input
                 String message = "";
@@ -99,7 +99,7 @@ public class OOoUninstalMojo extends AbstractMojo {
             else
                 throw new MojoExecutionException("undpkg renurned in error. Code: " + returnCode);
         } catch (Exception e) {
-            throw new MojoExecutionException("Error while installing package to OOo.", e);
+            throw new MojoExecutionException("Error while uninstalling package to OOo.", e);
         }
     }
 

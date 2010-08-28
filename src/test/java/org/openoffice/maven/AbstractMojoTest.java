@@ -12,6 +12,8 @@ import org.apache.maven.project.MavenProject;
 public abstract class AbstractMojoTest extends AbstractMojoTestCase {
 
     protected static final File TEST_POM = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
+    protected static final String TEST_GROUP_ID = "org.openoffice.dev.tests";
+    protected static final String TEST_ARTIFACT_ID = "ooo-ext-test";
     protected static final File OUTPUT_DIRECTORY = new File(getTargetDir(), "ooo");
     protected static final String TEST_FINAL_NAME = "testFinalName";
     protected static final File OXT_FILE = new File(OUTPUT_DIRECTORY, TEST_FINAL_NAME + ".oxt");
@@ -43,21 +45,24 @@ public abstract class AbstractMojoTest extends AbstractMojoTestCase {
         File pomFile = new File(baseDir, "pom.xml");
         try {
             MavenProject project = new MavenProject();
-            String groupId = "org.openoffice.dev.tests";
-            String artifactId = "ooo-ext-test";
-            Artifact artifact = new DefaultArtifact(groupId, artifactId,
-                    VersionRange.createFromVersion("1.1.1-SNAPSHOT"), "test", "type", "classifier", null);
-            artifact.setFile(OXT_FILE);
+            Artifact artifact = createArtifact();
             project.addAttachedArtifact(artifact);
             project.setArtifact(artifact);
-            project.setGroupId(groupId);
-            project.setArtifactId(artifactId);
+            project.setGroupId(TEST_GROUP_ID);
+            project.setArtifactId(TEST_ARTIFACT_ID);
             project.setBasedir(baseDir);
             project.setFile(pomFile);
             setVariableValueToObject(mojo, "project", project);
         } catch (Exception e) {
             throw new AssertionError(e);
         }
+    }
+
+    protected static Artifact createArtifact() {
+        Artifact artifact = new DefaultArtifact(TEST_GROUP_ID, TEST_ARTIFACT_ID,
+                VersionRange.createFromVersion("1.1.1-SNAPSHOT"), "test", "type", "classifier", null);
+        artifact.setFile(OXT_FILE);
+        return artifact;
     }
 
     /**

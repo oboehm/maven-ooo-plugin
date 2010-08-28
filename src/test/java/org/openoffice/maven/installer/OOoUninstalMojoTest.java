@@ -1,5 +1,5 @@
 /*************************************************************************
- * OOoInstalMojoTest.java
+ * OOoUninstalMojoTest.java
  *
  * The Contents of this file are made available subject to the terms of
  * either of the GNU Lesser General Public License Version 2.1
@@ -21,18 +21,27 @@
  *
  * Contributor(s): oliver.boehm@agentes.de
  ************************************************************************/
+
 package org.openoffice.maven.installer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.*;
 import org.openoffice.maven.AbstractMojoTest;
 
 /**
- * JUnit test for OOoInstalMojo.
+ * JUnit test for OOoUninstalMojo.
  * 
  * @author oliver (oliver.boehm@agentes.de)
  * @since 1.1.1 (28.08.2010)
  */
-public class OOoInstalMojoTest extends AbstractMojoTest {
+public class OOoUninstalMojoTest extends AbstractMojoTest {
+    
+    private static final Log log = LogFactory.getLog(OOoUninstalMojoTest.class);
     
     /**
      * Set up the mojo.
@@ -40,32 +49,29 @@ public class OOoInstalMojoTest extends AbstractMojoTest {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        this.setUp("install");
+        super.setUp();
+        mojo = (AbstractMojo) lookupMojo("uninstall", TEST_POM);
+        assertNotNull(mojo);
+        this.setUpMojo();
+        Artifact artifact = createArtifact();
+        List<Artifact> artifacts = new ArrayList<Artifact>(1);
+        artifacts.add(artifact);
+        setVariableValueToObject(mojo, "attachedArtifacts", artifacts);
     }
     
     /**
-     * Sets the mojo for phase "install" or "uninstall".
+     * Test method for {@link OOoUninstalMojo#execute()}.
      *
-     * @param phase "install" or "uninstall"
-     * @throws Exception the exception
-     */
-    protected void setUp(final String phase) throws Exception {
-        super.setUp();
-        mojo = (AbstractMojo) lookupMojo(phase, TEST_POM);
-        assertNotNull(mojo);
-        this.setUpMojo();
-        this.setUpProject4Mojo();
-    }
-
-    /**
-     * Test method for {@link OOoInstalMojo#execute()}.
-     *
-     * @throws MojoExecutionException the mojo execution exception
      * @throws MojoFailureException the mojo failure exception
      * @throws IllegalAccessException the illegal access exception
      */
-    public void testExecute() throws MojoExecutionException, MojoFailureException, IllegalAccessException {
-        mojo.execute();
+    public void testExecute() throws MojoFailureException, IllegalAccessException {
+        try {
+            mojo.execute();
+            log.info("Uninstall was successful");
+        } catch (MojoExecutionException canhappen) {
+            log.info("Uninstall reports an error", canhappen);
+        }
     }
 
 }
