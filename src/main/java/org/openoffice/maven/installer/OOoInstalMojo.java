@@ -27,7 +27,6 @@ public class OOoInstalMojo extends AbstractMojo {
      * OOo instance to build the extension against.
      * 
      * @parameter
-     * @required
      */
     private File ooo;
 
@@ -35,7 +34,6 @@ public class OOoInstalMojo extends AbstractMojo {
      * OOo SDK installation where the build tools are located.
      * 
      * @parameter
-     * @required
      */
     private File sdk;
 
