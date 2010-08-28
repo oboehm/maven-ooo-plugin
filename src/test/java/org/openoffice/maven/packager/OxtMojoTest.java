@@ -33,14 +33,11 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.openoffice.maven.AbstractMojoTest;
 
@@ -52,11 +49,9 @@ import org.openoffice.maven.AbstractMojoTest;
  */
 public final class OxtMojoTest extends AbstractMojoTest {
     
-    private static final Log log = new SystemStreamLog();
-    private static final String TEST_FINAL_NAME = "testFinalName";
+    private static final Log log = LogFactory.getLog(OxtMojoTest.class);
     private static final File OXT_DIR = new File(getBasedir(), "src/main/resources/archetype-resources/src/main/oxt");
-    private static final File OXT_FILE = new File(OUTPUT_DIRECTORY, TEST_FINAL_NAME + ".oxt");
-
+    
     /**
      * Set up the mojo.
      * 
@@ -71,6 +66,7 @@ public final class OxtMojoTest extends AbstractMojoTest {
     
     protected void setUpMojo() throws IllegalAccessException {
         super.setUpMojo();
+        this.setUpTargetDir();
         setUpAbstractOxtMojo();
         setVariableValueToObject(mojo, "attachedArtifacts", new ArrayList<Artifact>());
         File classesDir = new File(getTargetDir(), "classes");
@@ -89,29 +85,8 @@ public final class OxtMojoTest extends AbstractMojoTest {
         setVariableValueToObject(mojo, "oxtDir", OXT_DIR);
     }
 
-    private void setUpProject4Mojo() throws IllegalAccessException {
-        File baseDir = new File(getBasedir(), "src/main/resources/archetype-resources");
-        File pomFile = new File(baseDir, "pom.xml");
-        try {
-            MavenProject project = new MavenProject();
-            String groupId = "org.openoffice.dev.tests";
-            String artifactId = "ooo-ext-test";
-            Artifact artifact = new DefaultArtifact(groupId, artifactId,
-                    VersionRange.createFromVersion("1.1.1-SNAPSHOT"), "test", "type", "classifier", null);
-            project.addAttachedArtifact(artifact);
-            project.setArtifact(artifact);
-            project.setGroupId(groupId);
-            project.setArtifactId(artifactId);
-            project.setBasedir(baseDir);
-            project.setFile(pomFile);
-            setVariableValueToObject(mojo, "project", project);
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-    
     /**
-     * Test method for {@link tOxtMojo#execute()}.
+     * Test method for {@link OxtMojo#execute()}.
      *
      * @throws MojoExecutionException the mojo execution exception
      * @throws MojoFailureException the mojo failure exception

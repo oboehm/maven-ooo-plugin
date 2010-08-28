@@ -52,6 +52,7 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
         super.setUp();
         this.mojo = new IdlBuilderMojo();
         this.setUpMojo();
+        this.setUpTargetDir();
     }
 
     /**
@@ -90,7 +91,7 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
      */
     public void testExecute() throws IllegalAccessException, MojoExecutionException, MojoFailureException, IOException {
         setUpIdlDir();
-        File buildDir = this.getTargetDir();
+        File buildDir = getTargetDir();
         FileUtils.copyFile(new File("src/test/resources/types.rdb"), new File(buildDir, "types.rdb"));
         mojo.execute();
     }
