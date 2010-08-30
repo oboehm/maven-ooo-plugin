@@ -88,7 +88,8 @@ public final class Environment {
         } else if (SystemUtils.IS_OS_MAC) {
             home = tryDirs("/Applications/OpenOffice.org3.2_SDK", "/opt/ooo/OpenOffice.org3.2_SDK");
         } else if (SystemUtils.IS_OS_WINDOWS) {
-            home = tryDirs(officeHome + "/Basis/sdk", "C:/sdk/OpenOffice.org_3.2_SDK/sdk", "C:/OO_SDK/sdk");
+            home = tryDirs(officeHome + "/Basis/sdk", "C:/Programme/OOsdk", "C:/sdk/OpenOffice.org_3.2_SDK/sdk",
+                    "C:/OO_SDK/sdk");
         } else {
             home = tryDirs(new File(officeHome, "Basis/sdk"), new File("/opt/openoffice.org/basis3.2/sdk"));
         }
