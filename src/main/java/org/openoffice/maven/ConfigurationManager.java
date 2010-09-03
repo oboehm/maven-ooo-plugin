@@ -37,6 +37,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.openoffice.maven.utils.ErrorReader;
+import org.openoffice.maven.utils.FileFinder;
 
 /**
  * Stores the Mojo configuration for use in the build visitors.
@@ -112,9 +113,15 @@ public class ConfigurationManager {
      * @return the OpenOffice.org <code>types.rdb</code> file path
      */
     public static String getOOoTypesFile() {
-        File oooTypes = new File(getOOo(), "/program/types.rdb");
-        if (!oooTypes.exists()) {
-            oooTypes = new File(Environment.getOoSdkUreHome(), "/share/misc/types.rdb");
+        File oooTypes = FileFinder.tryFiles(new File(getOOo(), "/program/types.rdb"),
+                new File(Environment.getOoSdkUreHome(), "/share/misc/types.rdb"),
+                new File(Environment.getOoSdkUreHome(), "/misc/types.rdb"));
+//        File oooTypes = new File(getOOo(), "/program/types.rdb");
+//        if (!oooTypes.exists()) {
+//            oooTypes = new File(Environment.getOoSdkUreHome(), "/share/misc/types.rdb");
+//        }
+        if (oooTypes == null) {
+            throw new RuntimeException("types.rdb not found");
         }
         return oooTypes.getPath();
     }
@@ -262,7 +269,8 @@ public class ConfigurationManager {
             // Windows environment
             env = new String[1];
             oooLibs = new File(getOOo(), "/program");
-            env[0] = "PATH=" + sdkBin + pathSep + Environment.getOoSdkUreBinDir() + pathSep
+            env[0] = "PATH=C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;" 
+                    + sdkBin + pathSep + Environment.getOoSdkUreBinDir() + pathSep
                     + oooBin + pathSep + oooLibs.getCanonicalPath();
             if (os.startsWith("windows 9")) {
                 cmd[0] = "command.com";
@@ -367,7 +375,7 @@ public class ConfigurationManager {
      */
     private static String getSdkBinPath() {
         File sdkHome = Environment.getOoSdkHome();
-        // OOo SDK does not seems to include th target os in their packaging
+        // OOo SDK does not seem to include the target os in their packaging
         // anymore. Tested with 3.2.0
         String path = "/bin";
         if (new File(sdkHome, path).exists()) {

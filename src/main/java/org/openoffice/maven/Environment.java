@@ -29,6 +29,7 @@ import java.io.File;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.openoffice.maven.utils.FileFinder;
 
 /**
  * This class handles the differences between the support OS.
@@ -91,7 +92,7 @@ public final class Environment {
             home = tryDirs(officeHome + "/Basis/sdk", "C:/Programme/OOsdk", "C:/sdk/OpenOffice.org_3.2_SDK/sdk",
                     "C:/OO_SDK/sdk");
         } else {
-            home = tryDirs(new File(officeHome, "Basis/sdk"), new File("/opt/openoffice.org/basis3.2/sdk"));
+            home = FileFinder.tryDirs(new File(officeHome, "Basis/sdk"), new File("/opt/openoffice.org/basis3.2/sdk"));
         }
         if (home == null) {
             log.debug("SDK home not found - must be set via configuration '<sdk>...</sdk>'");
@@ -109,15 +110,6 @@ public final class Environment {
         return null;
     }
 
-    private static File tryDirs(final File... dirs) {
-        for (int i = 0; i < dirs.length; i++) {
-            if (dirs[i].isDirectory()) {
-                return dirs[i];
-            }
-        }
-        return null;
-    }
-    
     /**
      * Sets home directory of OpenOffice (OFFICE_HOME).
      *
@@ -192,7 +184,7 @@ public final class Environment {
     public static synchronized File getOoSdkUreHome() {
         if (ooSdkUreHome == null) {
             if (SystemUtils.IS_OS_WINDOWS) {
-                ooSdkUreHome = getOoSdkHome();
+                ooSdkUreHome = FileFinder.tryDirs(new File(getOfficeHome(), "URE"), getOoSdkHome());
             } else {
                 ooSdkUreHome = new File(getOfficeBaseHome(), "ure-link");
             }
