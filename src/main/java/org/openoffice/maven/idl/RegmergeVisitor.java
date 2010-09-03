@@ -97,6 +97,7 @@ public class RegmergeVisitor implements IVisitor {
         String command = MessageFormat.format(commandPattern, (Object[]) args);
         
         // Run regmerge
-        ConfigurationManager.runTool(command);
+//        ConfigurationManager.runTool(command);
+        ConfigurationManager.runCommand(command);
     }
 }

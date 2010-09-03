@@ -1,9 +1,9 @@
 package org.openoffice.maven.installer;
 
-import java.io.*;
+import java.io.File;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.*;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.openoffice.maven.ConfigurationManager;
 
@@ -13,6 +13,8 @@ import org.openoffice.maven.ConfigurationManager;
  * @phase install
  */
 public class OOoInstalMojo extends AbstractMojo {
+    
+    private final Log log = this.getLog();
 
     /**
      * The Maven project.
@@ -65,43 +67,43 @@ public class OOoInstalMojo extends AbstractMojo {
             String unopkg = "unopkg";
             if (os.startsWith("windows"))
                 unopkg = "unopkg.com";
-            String[] cmd = new String[] { unopkg, //
-                            "add", //
-                            "-f", //
-                            unoPluginFile.getCanonicalPath(), //
-            };
+//            String[] cmd = new String[] { unopkg, //
+//                            "add", //
+//                            "-f", //
+//                            unoPluginFile.getCanonicalPath(), //
+//            };
 
             getLog().info("Installing plugin to OOo... please wait");
-            Process process = ConfigurationManager.runTool(cmd);
-            String message = "";
-            { // read std input
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line = buffer.readLine();
-                while (null != line) {
-                    message += line + "\n";
-                    line = buffer.readLine();
-                }
-                if (message.length() > 0)
-                    getLog().info(message);
-                buffer = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                line = buffer.readLine();
-                while (null != line) {
-                    message += line + "\n";
-                    line = buffer.readLine();
-                }
-                if (message.length() > 0)
-                    getLog().info(message);
-            }
-
-            int returnCode = process.waitFor();
-            boolean success = returnCode == 0;
-
-            if (success) {
-                getLog().info("Plugin installed successfully");
+//            Process process = ConfigurationManager.runTool(cmd);
+//            String message = "";
+//            { // read std input
+//                BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//                String line = buffer.readLine();
+//                while (null != line) {
+//                    message += line + "\n";
+//                    line = buffer.readLine();
+//                }
+//                if (message.length() > 0)
+//                    getLog().info(message);
+//                buffer = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//                line = buffer.readLine();
+//                while (null != line) {
+//                    message += line + "\n";
+//                    line = buffer.readLine();
+//                }
+//                if (message.length() > 0)
+//                    getLog().info(message);
+//            }
+//
+//            int returnCode = process.waitFor();
+            int returnCode = ConfigurationManager.runCommand(unopkg, "add", "-f", unoPluginFile.getCanonicalPath());
+            if (returnCode == 0) {
+                log.info("Plugin installed successfully");
             } else {
-                System.out.println("\nRunning: [" + StringUtils.join(cmd, " ") + "]");
-                throw new MojoExecutionException("unopkg renurned in error. Code: " + returnCode + "\n" + //
-                        message);
+//                System.out.println("\nRunning: [" + StringUtils.join(cmd, " ") + "]");
+//                throw new MojoExecutionException("unopkg renurned in error. Code: " + returnCode + "\n" + //
+//                        message);
+                throw new MojoExecutionException("'unopkg add -f " + unoPluginFile + "' returned with " + returnCode);
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Error while installing package to OOo.", e);

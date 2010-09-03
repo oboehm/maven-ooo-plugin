@@ -247,14 +247,17 @@ public class ConfigurationManager {
         sClassesOutput = pOutputDirectory;
     }
 
+    @Deprecated
     public static Process runTool(String pCommand) throws Exception {
         return runTool(new String[] { pCommand });
     }
 
+    @Deprecated
     public static Process runTool(String pCommand, String args) throws Exception {
         return runTool(new String[] { pCommand, args });
     }
 
+    @Deprecated
     public static Process runTool(String[] pCommand) throws Exception {
 
         String os = System.getProperty("os.name").toLowerCase();

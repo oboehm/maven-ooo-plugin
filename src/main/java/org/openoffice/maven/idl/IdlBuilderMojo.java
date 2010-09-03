@@ -221,7 +221,8 @@ public class IdlBuilderMojo extends AbstractMojo {
         getLog().info("Running command: " + command);
         
         // Run the javamaker command
-        ConfigurationManager.runTool(command);
+//        ConfigurationManager.runTool(command);
+        ConfigurationManager.runCommand(command);
     }
 
     /**

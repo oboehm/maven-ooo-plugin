@@ -27,9 +27,7 @@ package org.openoffice.maven;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -85,16 +83,16 @@ public final class ConfigurationManagerTest extends AbstractTest {
         assertTrue(idlDir + " is no directory", idlDir.isDirectory());
     }
     
-    /**
-     * Test method for {@link ConfigurationManager#runTool(String)}.
-     * Because it does not run on Windows (I think the date command
-     * waits here for input) the test can be deactivated.
-     */
-    @Test
-    public synchronized void testRunTool() throws Exception {
-        Process process = ConfigurationManager.runTool("date");
-        assertEquals(0, process.waitFor());
-    }
+//    /**
+//     * Test method for {@link ConfigurationManager#runTool(String)}.
+//     * Because it does not run on Windows (I think the date command
+//     * waits here for input) the test can be deactivated.
+//     */
+//    @Test
+//    public synchronized void testRunTool() throws Exception {
+//        Process process = ConfigurationManager.runTool("date");
+//        assertEquals(0, process.waitFor());
+//    }
     
     /**
      * Test method for {@link ConfigurationManager#runCommand(String)}.
@@ -105,17 +103,17 @@ public final class ConfigurationManagerTest extends AbstractTest {
         assertEquals(0, ret);
     }
     
-    /**
-     * Test method for {@link ConfigurationManager#runTool(String)}.
-     */
-    @Test
-    public synchronized void testRunIdlc() throws Exception {
-        log.info("running 'idcl -h'...");
-        Process process = ConfigurationManager.runTool("idlc", "-h");
-        InputStream istream = process.getInputStream();
-        log.info(IOUtils.toString(istream));
-        assertEquals(0, process.waitFor());
-    }
+//    /**
+//     * Test method for {@link ConfigurationManager#runTool(String)}.
+//     */
+//    @Test
+//    public synchronized void testRunIdlc() throws Exception {
+//        log.info("running 'idcl -h'...");
+//        Process process = ConfigurationManager.runTool("idlc", "-h");
+//        InputStream istream = process.getInputStream();
+//        log.info(IOUtils.toString(istream));
+//        assertEquals(0, process.waitFor());
+//    }
 
     /**
      * Test method for {@link ConfigurationManager#runCommand(String...)}.
@@ -128,33 +126,27 @@ public final class ConfigurationManagerTest extends AbstractTest {
     }
 
     /**
-     * Test method for {@link ConfigurationManager#runTool(String)}.
+     * Test to see if "regmerge" works.
+     *
+     * @throws CommandLineException the command line exception
      */
     @Test
-    public synchronized void testRunRegmerge() {
+    public synchronized void testRunRegmerge() throws CommandLineException {
         log.info("running 'regmerge -h'...");
-        try {
-            ConfigurationManager.runTool("regmerge", "-h");
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            assertTrue(msg, msg.contains("unknown option"));
-        }
+        ConfigurationManager.runCommand("regmerge", "-h");
     }
 
     /**
-     * Test method for {@link ConfigurationManager#runTool(String)} with the
+     * Test method for {@link ConfigurationManager#runCommand(String)} with the
      * unopkg command. 'unopkg' is normally placed in the search path of OOo
      * (and not the OOo SDK).
+     * 
+     * @throws CommandLineException the command line exception
      */
     @Test
-    public synchronized void testRunUnopkg() {
+    public synchronized void testRunUnopkg() throws CommandLineException {
         log.info("running 'unopkg -V'...");
-        try {
-            ConfigurationManager.runTool("unopkg", "-V");
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            assertTrue(msg, msg.contains("unknown option"));
-        }
+        ConfigurationManager.runCommand("unopkg", "-V");
     }
 
 }
