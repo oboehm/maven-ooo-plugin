@@ -32,6 +32,7 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.plexus.util.cli.CommandLineException;
 import org.junit.Test;
 
 
@@ -87,12 +88,21 @@ public final class ConfigurationManagerTest extends AbstractTest {
     /**
      * Test method for {@link ConfigurationManager#runTool(String)}.
      * Because it does not run on Windows (I think the date command
-     * waits here for input) the test is deactivated.
+     * waits here for input) the test can be deactivated.
      */
-    //@Test
+    @Test
     public synchronized void testRunTool() throws Exception {
         Process process = ConfigurationManager.runTool("date");
         assertEquals(0, process.waitFor());
+    }
+    
+    /**
+     * Test method for {@link ConfigurationManager#runCommand(String)}.
+     */
+    @Test
+    public synchronized void testRunCommand() throws CommandLineException {
+        int ret = ConfigurationManager.runCommand("date");
+        assertEquals(0, ret);
     }
     
     /**
@@ -105,6 +115,16 @@ public final class ConfigurationManagerTest extends AbstractTest {
         InputStream istream = process.getInputStream();
         log.info(IOUtils.toString(istream));
         assertEquals(0, process.waitFor());
+    }
+
+    /**
+     * Test method for {@link ConfigurationManager#runCommand(String...)}.
+     */
+    @Test
+    public synchronized void testRunIdlcCommand() throws Exception {
+        log.info("running 'idcl -h'...");
+        int ret = ConfigurationManager.runCommand("idlc", "-h");
+        assertEquals(0, ret);
     }
 
     /**

@@ -30,12 +30,14 @@ package org.openoffice.maven;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.codehaus.plexus.util.cli.*;
 import org.openoffice.maven.utils.ErrorReader;
 import org.openoffice.maven.utils.FileFinder;
 
@@ -416,5 +418,75 @@ public class ConfigurationManager {
         }
         return binDir.getAbsolutePath();
     }
+    
+    /**
+     * Run command.
+     * See {@link "http://docs.codehaus.org/display/MAVENUSER/Mojo+Developer+Cookbook"}.
+     *
+     * @param cmd the command
+     * @return the exit code of the command
+     * @throws CommandLineException the command line exception
+     */
+    public static int runCommand(final String cmd) throws CommandLineException {
+        Commandline cl = new Commandline(cmd);
+        return runCommand(cl);
+    }
 
+    /**
+     * Run command.
+     * See {@link "http://docs.codehaus.org/display/MAVENUSER/Mojo+Developer+Cookbook"}.
+     *
+     * @param cmd the command
+     * @param args the args
+     * @return the exit code of the command
+     * @throws CommandLineException the command line exception
+     */
+    public static int runCommand(final String cmd, final String... args) throws CommandLineException {
+        Commandline cl = new Commandline(cmd);
+        cl.addArguments(args);
+        return runCommand(cl);
+    }
+
+    private static int runCommand(Commandline cl) throws CommandLineException {
+        try {
+            setUpEnvironmentFor(cl);
+        } catch (Exception e) {
+            log.warn("can't setup environment for '" + cl + "' - will try without environment...");
+        }
+        CommandLineUtils.StringStreamConsumer output = new CommandLineUtils.StringStreamConsumer();
+        CommandLineUtils.StringStreamConsumer error = new CommandLineUtils.StringStreamConsumer();
+        int returnValue = CommandLineUtils.executeCommandLine(cl, output, error);
+        log.info("'" + cl + "' returned with " + returnValue);
+        log.debug("stdout: " + output.getOutput().trim());
+        String errmsg = error.getOutput().trim();
+        if (StringUtils.isNotEmpty(errmsg)) {
+            log.warn("stderr: " + error.getOutput().trim());
+        }
+        return returnValue;
+    }
+    
+    private static void setUpEnvironmentFor(final Commandline cl) throws Exception {
+        cl.addSystemEnvironment();
+        Properties envVars = cl.getSystemEnvVars();
+        String path = envVars.getProperty("PATH", "");
+        String pathSep = System.getProperty("path.separator", ":");
+        path = getSdkBinPath() + pathSep + getOOoBinPath() + pathSep + Environment.getOoSdkUreBinDir() + pathSep + path;        
+        cl.addEnvironment("PATH", path);
+        String oooLibs = Environment.getOoSdkUreLibDir().getCanonicalPath();
+        if (SystemUtils.IS_OS_WINDOWS) {
+            // I'm not sure if this works / is necessary
+            cl.addEnvironment("DLLPATH", oooLibs);
+        } else if (SystemUtils.IS_OS_MAC) {
+            cl.addEnvironment("DYLD_LIBRARY_PATH", oooLibs);
+        } else {
+            // *NIX environment
+            cl.addEnvironment("LD_LIBRARY_PATH", oooLibs);
+        }
+        log.debug("environment: ");
+        String[] environment = cl.getEnvironmentVariables();
+        for (int i = 0; i < environment.length; i++) {
+            log.debug("   " + environment[i]);
+        }
+    }
+    
 }
