@@ -43,8 +43,7 @@
  ************************************************************************/
 package org.openoffice.maven.idl;
 
-import java.io.*;
-import java.text.MessageFormat;
+import java.io.File;
 
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -113,33 +112,33 @@ public class IdlcVisitor implements IVisitor {
 
         System.out.println(outDir);
 
-        String[] argsParam = { outDir.getPath(), sdkIdl.getPath(), prjIdl.getPath(), pFile.getPath() };
-
-        File command = new File("idlc");
-        String args = "-O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";
-        args = MessageFormat.format(args, (Object[]) argsParam);
-        
-        Process process = ConfigurationManager.runTool(command.getPath(), args);
-
-        ErrorReader.readErrors(process.getErrorStream());
-
-        String output = "";
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line = buffer.readLine();
-        while (null != line) {
-            output += line + "\n";
-            line = buffer.readLine();
-        }
-        System.out.println("Output: " + output);
-        int n = process.waitFor();
-        if (n != 0) {
-            throw new Exception("'" + command + " " + args + "' exits with " + n);
-        }
-
-//        int n = ConfigurationManager.runCommand(command.getPath(), args);
-//        if (n != 0) {
-//            throw new CommandLineException("'" + command + " " + args + "' exits with " + n);
+//        String[] argsParam = { outDir.getPath(), sdkIdl.getPath(), prjIdl.getPath(), pFile.getPath() };
+//
+//        File command = new File("idlc");
+//        String args = "-O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";
+//        args = MessageFormat.format(args, (Object[]) argsParam);
+//        
+//        Process process = ConfigurationManager.runTool(command.getPath(), args);
+//
+//        ErrorReader.readErrors(process.getErrorStream());
+//
+//        String output = "";
+//        BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//        String line = buffer.readLine();
+//        while (null != line) {
+//            output += line + "\n";
+//            line = buffer.readLine();
 //        }
-//        log.info("'" + command + " " + args + "' was successful");
+//        System.out.println("Output: " + output);
+//        int n = process.waitFor();
+//        if (n != 0) {
+//            throw new Exception("'" + command + " " + args + "' exits with " + n);
+//        }
+
+        int n = ConfigurationManager.runCommand("idlc", "-O", outDir.getPath(), "-I", sdkIdl.getPath(), "-I",
+                prjIdl.getPath(), pFile.getPath());
+        if (n != 0) {
+            throw new CommandLineException("idlc exits with " + n);
+        }
     }
 }

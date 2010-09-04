@@ -26,8 +26,12 @@ package org.openoffice.maven.idl;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.openoffice.maven.AbstractTest;
+import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.maven.utils.VisitableFile;
 
 /**
@@ -35,6 +39,8 @@ import org.openoffice.maven.utils.VisitableFile;
  * @since 1.2 (31.07.2010)
  */
 public class IdlcVisitorTest extends AbstractTest {
+    
+    private static final File urdDir = new File(ConfigurationManager.getUrdDir());
 
     /**
      * Test method for {@link org.openoffice.maven.idl.IdlcVisitor#runIdlcOnFile(org.openoffice.maven.utils.VisitableFile)}.
@@ -42,10 +48,13 @@ public class IdlcVisitorTest extends AbstractTest {
      */
     @Test
     public void testRunIdlcOnFile() throws Exception {
+        FileUtils.deleteDirectory(urdDir);
         VisitableFile idlFile = new VisitableFile(
                 "src/main/resources/archetype-resources/src/main/idl/hello/WorldInterface.idl");
         assertTrue(idlFile.getAbsoluteFile() + " not found", idlFile.exists());
         IdlcVisitor.runIdlcOnFile(idlFile);
+        File expected = new File(urdDir, "hello/WorldInterface.urd");
+        assertTrue(expected + " does not exist", expected.exists());
     }
 
 }
