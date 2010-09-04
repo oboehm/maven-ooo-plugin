@@ -91,8 +91,13 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
     public void testExecute() throws IllegalAccessException, MojoExecutionException, MojoFailureException, IOException {
         setUpIdlDir();
         File buildDir = getTargetDir();
+        File oooBuildDir = new File(buildDir, "ooo");
+        FileUtils.deleteDirectory(oooBuildDir);
+        assertFalse(oooBuildDir + " can't be deleted", oooBuildDir.exists());
         FileUtils.copyFile(new File("src/test/resources/types.rdb"), new File(buildDir, "types.rdb"));
         mojo.execute();
+        File expectedClassFile = new File(oooBuildDir, "hello/WorldInterface.class");
+        assertTrue(expectedClassFile + " was not created", expectedClassFile.exists());
     }
 
     private void setUpIdlDir() throws IllegalAccessException {

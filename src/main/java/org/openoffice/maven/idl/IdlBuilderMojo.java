@@ -45,7 +45,6 @@ package org.openoffice.maven.idl;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.*;
@@ -202,35 +201,39 @@ public class IdlBuilderMojo extends AbstractMojo {
                     "No " + typesFile + " file build: check previous errors");
         }
 
-        // Compute the command
-        String commandPattern = "javamaker -T{0}.* -nD -Gc -BUCR -O " +
-                "\"{1}\" \"{2}\" -X\"{3}\" -X\"{4}\"";
-
-        String classesDir = ConfigurationManager.getClassesOutput().
-            getPath();
-        String oooTypesFile = ConfigurationManager.getOOoTypesFile();
-
-        // Guess the root module
-        String rootModule = guessRootModule();
-
-        String[] args = {
-            rootModule, 
-            classesDir, 
-            typesFile, 
-            oooTypesFile,
-            ConfigurationManager.getOffapiTypesFile()
-        };
-        String command = MessageFormat.format(commandPattern, (Object[])args);
-
-        log.info("Running command: " + command);
+//        // Compute the command
+//        String commandPattern = "javamaker -T{0}.* -nD -Gc -BUCR -O " +
+//                "\"{1}\" \"{2}\" -X\"{3}\" -X\"{4}\"";
+//
+//        String classesDir = ConfigurationManager.getClassesOutput().
+//            getPath();
+//        String oooTypesFile = ConfigurationManager.getOOoTypesFile();
+//
+//        // Guess the root module
+//        String rootModule = guessRootModule();
+//
+//        String[] args = {
+//            rootModule, 
+//            classesDir, 
+//            typesFile, 
+//            oooTypesFile,
+//            ConfigurationManager.getOffapiTypesFile()
+//        };
+//        String command = MessageFormat.format(commandPattern, (Object[])args);
+//
+//        log.info("Running command: " + command);
+//        
+//        // Run the javamaker command
+//        ConfigurationManager.runTool(command);
         
-        // Run the javamaker command
-        ConfigurationManager.runTool(command);
-//        int n = ConfigurationManager.runCommand(command);
-//        if (n != 0) {
-//            throw new CommandLineException("'" + command + " " + args + "' exits with " + n);
-//        }
-//        log.info("'" + command + " " + args + "' was successful");
+        String classesDir = ConfigurationManager.getClassesOutput().getPath();
+        String oooTypesFile = ConfigurationManager.getOOoTypesFile();
+        String rootModule = guessRootModule();
+        int n = ConfigurationManager.runCommand("javamaker", "-T" + rootModule + ".*", "-nD", "-Gc", "-BUCR", "-O",
+                classesDir, typesFile, "-X" + oooTypesFile, "-X" + ConfigurationManager.getOffapiTypesFile());
+        if (n != 0) {
+            throw new CommandLineException("javamaker exits with " + n);
+        }
     }
 
     /**

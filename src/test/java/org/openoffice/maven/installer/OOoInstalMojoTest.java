@@ -23,6 +23,10 @@
  ************************************************************************/
 package org.openoffice.maven.installer;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.*;
 import org.openoffice.maven.AbstractMojoTest;
 
@@ -62,8 +66,11 @@ public class OOoInstalMojoTest extends AbstractMojoTest {
      * @throws MojoExecutionException the mojo execution exception
      * @throws MojoFailureException the mojo failure exception
      * @throws IllegalAccessException the illegal access exception
+     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void testExecute() throws MojoExecutionException, MojoFailureException, IllegalAccessException {
+    public void testExecute() throws MojoExecutionException, MojoFailureException, IllegalAccessException, IOException {
+        FileUtils.copyFile(new File("src/test/resources/testFinalName.oxt"), new File(getTargetDir(),
+                "ooo/testFinalName.oxt"));
         mojo.execute();
     }
 
