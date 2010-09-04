@@ -45,6 +45,8 @@ package org.openoffice.maven.idl;
 
 import java.text.MessageFormat;
 
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.cli.CommandLineException;
 import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.maven.utils.*;
 
@@ -55,6 +57,8 @@ import org.openoffice.maven.utils.*;
  *
  */
 public class RegmergeVisitor implements IVisitor {
+    
+    private static final Log log = new IdlBuilderMojo().getLog();
 
     /**
      * {@inheritDoc}
@@ -84,7 +88,7 @@ public class RegmergeVisitor implements IVisitor {
     private static void runRegmergeOnFile(VisitableFile pFile) 
         throws Exception {
         
-        new IdlBuilderMojo().getLog().info("Merging file: " + pFile.getPath());
+        log.info("Merging file: " + pFile.getPath());
         
         // Compute the command line
         String commandPattern = "regmerge {0} /UCR {0} \"{1}\"";
@@ -97,7 +101,12 @@ public class RegmergeVisitor implements IVisitor {
         String command = MessageFormat.format(commandPattern, (Object[]) args);
         
         // Run regmerge
-//        ConfigurationManager.runTool(command);
-        ConfigurationManager.runCommand(command);
+        ConfigurationManager.runTool(command);
+//        int n = ConfigurationManager.runCommand(command);
+//        if (n == 0) {
+//            log.info("'" + command + "' was successful");
+//        } else {
+//            throw new CommandLineException("'" + command + "' returned with " + n);
+//        }
     }
 }

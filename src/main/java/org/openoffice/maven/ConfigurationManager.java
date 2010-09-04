@@ -485,11 +485,11 @@ public class ConfigurationManager {
             // *NIX environment
             cl.addEnvironment("LD_LIBRARY_PATH", oooLibs);
         }
-        log.debug("environment: ");
-        String[] environment = cl.getEnvironmentVariables();
-        for (int i = 0; i < environment.length; i++) {
-            log.debug("   " + environment[i]);
-        }
+//        log.debug("environment: ");
+//        String[] environment = cl.getEnvironmentVariables();
+//        for (int i = 0; i < environment.length; i++) {
+//            log.debug("   " + environment[i]);
+//        }
     }
     
 }

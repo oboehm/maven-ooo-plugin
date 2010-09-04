@@ -49,6 +49,8 @@ import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.*;
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.cli.CommandLineException;
 import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.maven.utils.VisitableFile;
 
@@ -61,6 +63,8 @@ import org.openoffice.maven.utils.VisitableFile;
  * @author Cedric Bosdonnat
  */
 public class IdlBuilderMojo extends AbstractMojo {
+    
+    private final Log log = this.getLog();
 
     static final class PackageNameFilter implements FilenameFilter {
         public boolean accept(File pDir, String pName) {
@@ -221,8 +225,12 @@ public class IdlBuilderMojo extends AbstractMojo {
         getLog().info("Running command: " + command);
         
         // Run the javamaker command
-//        ConfigurationManager.runTool(command);
-        ConfigurationManager.runCommand(command);
+        ConfigurationManager.runTool(command);
+//        int n = ConfigurationManager.runCommand(command);
+//        if (n != 0) {
+//            throw new CommandLineException("'" + command + " " + args + "' exits with " + n);
+//        }
+//        log.info("'" + command + " " + args + "' was successful");
     }
 
     /**

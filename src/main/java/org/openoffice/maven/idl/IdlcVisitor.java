@@ -46,6 +46,7 @@ package org.openoffice.maven.idl;
 import java.io.*;
 import java.text.MessageFormat;
 
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.maven.utils.*;
@@ -57,6 +58,7 @@ import org.openoffice.maven.utils.*;
  */
 public class IdlcVisitor implements IVisitor {
 
+    private static final Log log = new IdlBuilderMojo().getLog();
     private boolean mFoundIdlFile = false;
 
     /**
@@ -99,7 +101,7 @@ public class IdlcVisitor implements IVisitor {
      */
     static void runIdlcOnFile(VisitableFile pFile) throws Exception {
 
-        new IdlBuilderMojo().getLog().info("Building file: " + pFile.getPath());
+        log.info("Building file: " + pFile.getPath());
 
         String idlPath = ConfigurationManager.getIdlDir().getAbsolutePath();
         String idlRelativePath = pFile.getParentFile().getAbsolutePath().substring(idlPath.length());
@@ -117,26 +119,27 @@ public class IdlcVisitor implements IVisitor {
         String args = "-O \"{0}\" -I \"{1}\" -I \"{2}\" {3}";
         args = MessageFormat.format(args, (Object[]) argsParam);
         
-//        Process process = ConfigurationManager.runTool(command.getPath(), args);
-//
-//        ErrorReader.readErrors(process.getErrorStream());
-//
-//        String output = "";
-//        BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//        String line = buffer.readLine();
-//        while (null != line) {
-//            output += line + "\n";
-//            line = buffer.readLine();
-//        }
-//        System.out.println("Output: " + output);
-//        int n = process.waitFor();
-//        if (n != 0) {
-//            throw new Exception("'" + command + " " + args + "' exits with " + n);
-//        }
+        Process process = ConfigurationManager.runTool(command.getPath(), args);
 
-        int n = ConfigurationManager.runCommand(command.getPath(), args);
-        if (n != 0) {
-            throw new CommandLineException("'" + command + " " + args + "' exits with " + n);
+        ErrorReader.readErrors(process.getErrorStream());
+
+        String output = "";
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = buffer.readLine();
+        while (null != line) {
+            output += line + "\n";
+            line = buffer.readLine();
         }
+        System.out.println("Output: " + output);
+        int n = process.waitFor();
+        if (n != 0) {
+            throw new Exception("'" + command + " " + args + "' exits with " + n);
+        }
+
+//        int n = ConfigurationManager.runCommand(command.getPath(), args);
+//        if (n != 0) {
+//            throw new CommandLineException("'" + command + " " + args + "' exits with " + n);
+//        }
+//        log.info("'" + command + " " + args + "' was successful");
     }
 }
