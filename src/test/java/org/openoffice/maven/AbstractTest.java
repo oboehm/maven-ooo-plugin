@@ -33,9 +33,14 @@ import java.io.File;
  * @since 1.2 (31.07.2010)
  */
 public class AbstractTest {
+    
+    protected static final File targetDir;
+    protected static final File urdDir;
 
     static {
         setUpEnvironment();
+        targetDir = ConfigurationManager.getOutput();
+        urdDir = new File(ConfigurationManager.getUrdDir());
     }
 
     public static void setUpEnvironment() {

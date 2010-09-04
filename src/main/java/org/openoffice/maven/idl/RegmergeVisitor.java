@@ -43,8 +43,6 @@
  ************************************************************************/
 package org.openoffice.maven.idl;
 
-import java.text.MessageFormat;
-
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.openoffice.maven.ConfigurationManager;
@@ -91,22 +89,21 @@ public class RegmergeVisitor implements IVisitor {
         log.info("Merging file: " + pFile.getPath());
         
         // Compute the command line
-        String commandPattern = "regmerge {0} /UCR {0} \"{1}\"";
-        
-        String projectTypes = "";
-        projectTypes = ConfigurationManager.getTypesFile();
-        
-        String[] args = {projectTypes, pFile.getPath()};
-        
-        String command = MessageFormat.format(commandPattern, (Object[]) args);
+//        String commandPattern = "regmerge {0} /UCR {0} \"{1}\"";
+//        
+//        String projectTypes = "";
+//        projectTypes = ConfigurationManager.getTypesFile();
+//        
+//        String[] args = {projectTypes, pFile.getPath()};
+//        
+//        String command = MessageFormat.format(commandPattern, (Object[]) args);
         
         // Run regmerge
-        ConfigurationManager.runTool(command);
-//        int n = ConfigurationManager.runCommand(command);
-//        if (n == 0) {
-//            log.info("'" + command + "' was successful");
-//        } else {
-//            throw new CommandLineException("'" + command + "' returned with " + n);
-//        }
+//        ConfigurationManager.runTool(command);
+        int n = ConfigurationManager.runCommand("regmerge", ConfigurationManager.getTypesFile(), "/UCR",
+                pFile.getPath());
+        if (n != 0) {
+            throw new CommandLineException("regmerge returned with " + n);
+        }
     }
 }

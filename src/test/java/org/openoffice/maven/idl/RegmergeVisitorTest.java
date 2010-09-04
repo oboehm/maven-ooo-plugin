@@ -1,5 +1,5 @@
 /*************************************************************************
- * IdlcVisitorTest.java
+ * RegmergeVisitorTest.java
  *
  * The Contents of this file are made available subject to the terms of
  * either of the GNU Lesser General Public License Version 2.1
@@ -24,39 +24,47 @@
 
 package org.openoffice.maven.idl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.openoffice.maven.AbstractTest;
 import org.openoffice.maven.utils.IVisitor;
 import org.openoffice.maven.utils.VisitableFile;
 
 /**
- * @author oliver
- * @since 1.2 (31.07.2010)
+ * JUnit test for RegmergeVisitor.
+ * 
+ * @author oliver (oliver.boehm@agentes.de)
+ * @since 1.1.1 (04.09.2010)
  */
-public class IdlcVisitorTest extends AbstractTest {
+public class RegmergeVisitorTest extends AbstractTest {
     
-    private final IVisitor visitor = new IdlcVisitor();
+    private static final Log log = LogFactory.getLog(RegmergeVisitorTest.class);
+    private final IVisitor visitor = new RegmergeVisitor();
 
     /**
-     * Test method for {@link IdlcVisitor#visit(org.openoffice.maven.utils.VisitableFile)}.
+     * Test method for {@link RegmergeVisitor#visit(org.openoffice.maven.utils.IVisitable)}.
      * We want to test the call of the regmerge command.
-     * 
-     * @throws Exception if idlc compiler fails
+     *
+     * @throws Exception the exception
      */
     @Test
-    public void testRunIdlcOnFile() throws Exception {
-        FileUtils.deleteDirectory(urdDir);
-        VisitableFile idlFile = new VisitableFile(
-                "src/main/resources/archetype-resources/src/main/idl/hello/WorldInterface.idl");
-        assertTrue(idlFile.getAbsoluteFile() + " not found", idlFile.exists());
-        visitor.visit(idlFile);
-        File expected = new File(urdDir, "hello/WorldInterface.urd");
-        assertTrue(expected + " does not exist", expected.exists());
+    public void testVisit() throws Exception {
+        File typesFile = new File(targetDir, "types.rdb");
+        typesFile.delete();
+        assertFalse(typesFile + " can't be deleted", typesFile.exists());
+        VisitableFile urdFile = new VisitableFile(urdDir, "hello/WorldInterface.urd");
+        if (!urdFile.exists()) {
+            log.info(urdFile + " must be created first...");
+            new IdlcVisitorTest().testRunIdlcOnFile();
+        }
+        assertTrue(urdFile + " was not created", urdFile.exists());
+        visitor.visit(urdFile);
+        assertTrue(typesFile + " was not merged", typesFile.exists());
     }
 
 }

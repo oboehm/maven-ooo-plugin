@@ -82,6 +82,18 @@ public class VisitableFile extends File implements IVisitable {
     }
 
     /**
+     * Creates a new visitable file from the parent file and the child
+     * relative path.
+     *
+     * @param parent the parent
+     * @param child the child
+     * @see File#File(File, String)
+     */
+    public VisitableFile(File parent, String child) {
+        super(parent, child);
+    }
+
+    /**
      * Creates a new visitable file from the parent file and the child 
      * relative path.
      * 

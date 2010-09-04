@@ -90,15 +90,13 @@ public class IdlcVisitor implements IVisitor {
 
     /**
      * Executes the <code>idlc</code> tool on the provided IDL file.
-     * <br/>
-     * The method has default visibility for testing.
      * 
      * @param pFile
      *            the IDL file to compile
      * @throws Exception
      *             if the idl file compilation fails
      */
-    static void runIdlcOnFile(VisitableFile pFile) throws Exception {
+    private static void runIdlcOnFile(VisitableFile pFile) throws Exception {
 
         log.info("Building file: " + pFile.getPath());
 
