@@ -28,6 +28,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -99,7 +100,9 @@ public final class ConfigurationManagerTest extends AbstractTest {
      */
     @Test
     public synchronized void testRunCommand() throws CommandLineException {
-        int ret = ConfigurationManager.runCommand("date");
+        String command = SystemUtils.IS_OS_WINDOWS ? "dir" : "date";
+        log.info("running " + command + "...");
+        int ret = ConfigurationManager.runCommand(command);
         assertEquals(0, ret);
     }
     
