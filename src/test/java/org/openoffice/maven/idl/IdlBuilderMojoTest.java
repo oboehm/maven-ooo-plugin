@@ -64,6 +64,7 @@ public final class IdlBuilderMojoTest extends AbstractMojoTest {
      */
     public void testMojoGoal() throws Exception {
         File testPom = new File(getBasedir(), "src/main/resources/archetype-resources/pom.xml");
+        assertTrue(testPom + " is not a file", testPom.isFile());
         IdlBuilderMojo mojo = (IdlBuilderMojo) lookupMojo("build-idl", testPom);
         assertNotNull(mojo);
     }

@@ -47,6 +47,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -181,7 +182,8 @@ public class IdlBuilderMojo extends AbstractMojo {
             
         } catch (Exception e) {
             log.error("Error during idl-build", e);
-            throw new MojoFailureException("Please check the above errors");
+            //throw new MojoFailureException("Please check the above errors");
+            throw new MojoFailureException("Error during idl-build", e);
         }
     }
 
@@ -273,8 +275,10 @@ public class IdlBuilderMojo extends AbstractMojo {
         }
         String modulePath = currentFile.getPath().substring(
                 idlDir.getPath().length() + 1);
-        String fileSep = System.getProperty("file.separator");
-        String rootModule = modulePath.replaceAll(fileSep, ".");
+//        String fileSep = System.getProperty("file.separator");
+//        String rootModule = modulePath.replaceAll(fileSep, ".");
+        modulePath = FilenameUtils.separatorsToUnix(modulePath);
+        String rootModule = modulePath.replaceAll("/", ".");
         return rootModule;
     }
 }

@@ -199,7 +199,11 @@ public final class Environment {
      * @return directory with dynamic libraries
      */
     public static synchronized File getOoSdkUreLibDir() {
-        return new File(getOoSdkUreHome(), "lib");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return new File(getOoSdkUreHome(), "bin");
+        } else {
+            return new File(getOoSdkUreHome(), "lib");
+        }
     }
     
     /**
