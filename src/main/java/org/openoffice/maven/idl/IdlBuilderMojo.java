@@ -49,8 +49,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
+import org.openoffice.maven.BuildInfo;
 import org.openoffice.maven.ConfigurationManager;
 import org.openoffice.maven.utils.VisitableFile;
 
@@ -64,14 +64,12 @@ import org.openoffice.maven.utils.VisitableFile;
  */
 public class IdlBuilderMojo extends AbstractMojo {
     
-    private final Log log = this.getLog();
-
     /**
      * Instantiates a new idl builder mojo.
      */
     public IdlBuilderMojo() {
         super();
-        ConfigurationManager.setLog(log);
+        ConfigurationManager.setLog(this.getLog());
     }
 
     static final class PackageNameFilter implements FilenameFilter {
@@ -153,9 +151,9 @@ public class IdlBuilderMojo extends AbstractMojo {
                     "No IDL folder found among in the resources");
             }
             
-            log.info("IDL folder used: " + idlDir.getPath());
+            this.getLog().info("IDL folder used: " + idlDir.getPath());
 
-            log.info("Building IDL files");
+            this.getLog().info("Building IDL files");
             // Build each IDL file
             File idl = ConfigurationManager.getIdlDir();
             VisitableFile idlSources = new VisitableFile(idl.getPath());
@@ -165,33 +163,35 @@ public class IdlBuilderMojo extends AbstractMojo {
             // Continue only if there were idl files to build
             if (idlVisitor.hasBuildIdlFile()) {
 
-                log.info("Merging into types.rdb file");
+                this.getLog().info("Merging into types.rdb file");
                 // Merge the URD files into a types.rdb file
                 VisitableFile urdFiles = new VisitableFile(
                        ConfigurationManager.getUrdDir());
                 urdFiles.accept(new RegmergeVisitor());
 
-                log.info("Generating classes from the types.rdb file");
+                this.getLog().info("Generating classes from the types.rdb file");
                 // Run javamaker against the types.rdb file
                 generatesClasses();
             } else {
-                log.warn("No idl file to build");
+                this.getLog().warn("No idl file to build");
             }
             
         } catch (Exception e) {
-            log.error("Error during idl-build", e);
+            this.getLog().error("Error during idl-build", e);
             //throw new MojoFailureException("Please check the above errors");
             throw new MojoFailureException("Error during idl-build", e);
         }
     }
 
     private void setUp() {
+        ConfigurationManager.setLog(this.getLog());
+        this.getLog().info("Build id: " + new BuildInfo());
         ooo = ConfigurationManager.initOOo(ooo);
-        log.info("OpenOffice.org used: " + ooo.getAbsolutePath());
+        this.getLog().info("OpenOffice.org used: " + ooo.getAbsolutePath());
         sdk = ConfigurationManager.initSdk(sdk);
-        log.info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
+        this.getLog().info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
         ConfigurationManager.setIdlDir(idlDir);
-        log.info("idlDir used: " + idlDir.getAbsolutePath());
+        this.getLog().info("idlDir used: " + idlDir.getAbsolutePath());
         ConfigurationManager.setOutput(directory);
         ConfigurationManager.setClassesOutput(outputDirectory);
     }
@@ -232,7 +232,7 @@ public class IdlBuilderMojo extends AbstractMojo {
 //        };
 //        String command = MessageFormat.format(commandPattern, (Object[])args);
 //
-//        log.info("Running command: " + command);
+//        this.getLog().info("Running command: " + command);
 //        
 //        // Run the javamaker command
 //        ConfigurationManager.runTool(command);
@@ -279,7 +279,7 @@ public class IdlBuilderMojo extends AbstractMojo {
         }
         
         if (currentFile.equals(idlDir)) {
-            log.warn("no children found in " + idlDir);
+            this.getLog().warn("no children found in " + idlDir);
             return "";
         }
         String modulePath = currentFile.getPath().substring(

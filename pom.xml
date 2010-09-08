@@ -10,8 +10,16 @@
   <description>Maven plugin for OpenOffice.org extensions build</description>
 
   <packaging>maven-plugin</packaging>
-
+  
   <build>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
     <directory>target</directory>
     <plugins>
       <plugin>
@@ -55,6 +63,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    <buildNumber>${maven.build.timestamp}</buildNumber>
   </properties>
 
   <dependencies>
