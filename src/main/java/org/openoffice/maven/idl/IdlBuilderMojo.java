@@ -66,6 +66,14 @@ public class IdlBuilderMojo extends AbstractMojo {
     
     private final Log log = this.getLog();
 
+    /**
+     * Instantiates a new idl builder mojo.
+     */
+    public IdlBuilderMojo() {
+        super();
+        ConfigurationManager.setLog(log);
+    }
+
     static final class PackageNameFilter implements FilenameFilter {
         public boolean accept(File pDir, String pName) {
             if ("CVS".equals(pName)) {
@@ -178,7 +186,6 @@ public class IdlBuilderMojo extends AbstractMojo {
     }
 
     private void setUp() {
-        ConfigurationManager.setLog(log);
         ooo = ConfigurationManager.initOOo(ooo);
         log.info("OpenOffice.org used: " + ooo.getAbsolutePath());
         sdk = ConfigurationManager.initSdk(sdk);

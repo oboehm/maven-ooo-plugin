@@ -489,19 +489,19 @@ public class ConfigurationManager {
         String pathSep = System.getProperty("path.separator", ":");
         path = getSdkBinPath() + pathSep + getOOoBinPath() + pathSep + Environment.getOoSdkUreBinDir() + pathSep + path;        
         cl.addEnvironment("PATH", path);
-        log.debug("PATH=" + path);
+        //log.debug("PATH=" + path);
         String oooLibs = Environment.getOoSdkUreLibDir().getCanonicalPath();
         if (SystemUtils.IS_OS_WINDOWS) {
             // I'm not sure if this works / is necessary
             cl.addEnvironment("DLLPATH", oooLibs);
-            log.debug("DLLPATH=" + oooLibs);
+            //log.debug("DLLPATH=" + oooLibs);
         } else if (SystemUtils.IS_OS_MAC) {
             cl.addEnvironment("DYLD_LIBRARY_PATH", oooLibs);
-            log.debug("DYLD_LIBRARY_PATH=" + oooLibs);
+            //log.debug("DYLD_LIBRARY_PATH=" + oooLibs);
         } else {
             // *NIX environment
             cl.addEnvironment("LD_LIBRARY_PATH", oooLibs);
-            log.debug("LD_LIBRARY_PATH=" + oooLibs);
+            //log.debug("LD_LIBRARY_PATH=" + oooLibs);
         }
     }
     
