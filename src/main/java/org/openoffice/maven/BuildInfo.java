@@ -47,12 +47,9 @@ public final class BuildInfo {
     /** The Constant infos. */
     private static final Properties infos = loadBuildProperties();
     
-    /** The Constant KEY_BUILD_DATE. */
-    private static final String KEY_BUILD_DATE = "build.date";
-    
-    /** The Constant KEY_BUILD_NUMBER. */
-    private static final String KEY_BUILD_NUMBER = "build.number";
-    
+    /** The Constant KEY_BUILD_ID. */
+    private static final String KEY_BUILD_ID = "build.id";
+
     /** The Constant KEY_VERSION. */
     private static final String KEY_VERSION = "version";
     
@@ -66,31 +63,12 @@ public final class BuildInfo {
     }
     
     /**
-     * Gets the builds the date.
-     *
-     * @return the builds the date
-     */
-    public static String getBuildDate() {
-        return infos.getProperty(KEY_BUILD_DATE, "unknown");
-    }
-    
-    /**
-     * Gets the builds the number.
-     *
-     * @return the builds the number
-     */
-    public static String getBuildNumber() {
-        return infos.getProperty(KEY_BUILD_NUMBER, "unknown");
-    }
-    
-    /**
-     * The build id is composed by several values provided by the other
-     * getter methods.
+     * Gets the build id.
      *
      * @return the build id
      */
     public static String getBuildId() {
-        return getVersion() + " " + getBuildDate() + "-" + getBuildNumber();
+        return infos.getProperty(KEY_BUILD_ID, "unknown");
     }
     
     /**
@@ -119,8 +97,7 @@ public final class BuildInfo {
      */
     private static Properties getDefaultProperties() {
         Properties props = new Properties();
-        props.put(KEY_BUILD_DATE, "unknown");
-        props.put(KEY_BUILD_NUMBER, "unknown");
+        props.put(KEY_BUILD_ID, "unknown");
         props.put(KEY_VERSION, "unknown");
         return props;
     }
@@ -133,7 +110,7 @@ public final class BuildInfo {
      */
     @Override
     public String toString() {
-        return getBuildId();
+        return getVersion() + " " + getBuildId();
     }
 
 }

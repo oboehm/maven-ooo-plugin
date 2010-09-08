@@ -52,25 +52,14 @@ public class BuildInfoTest {
     }
 
     /**
-     * Test method for {@link org.openoffice.maven.BuildInfo#getBuildDate()}.
+     * Test method for {@link org.openoffice.maven.BuildInfo#getBuildId()}.
      */
     @Test
     public void testGetBuildDate() {
-        String date = BuildInfo.getBuildDate();
-        log.info("build.date=" + date);
-        assertNotNull(date);
-        assertFalse("unknown build date", date.equalsIgnoreCase("unknown"));
-    }
-
-    /**
-     * Test method for {@link org.openoffice.maven.BuildInfo#getBuildNumber()}.
-     */
-    @Test
-    public void testGetBuildNumber() {
-        String number = BuildInfo.getBuildNumber();
-        log.info("build.number=" + number);
-        assertNotNull(number);
-        assertFalse("unknown build number", number.equalsIgnoreCase("unknown"));
+        String value = BuildInfo.getBuildId();
+        log.info("build.id=" + value);
+        assertNotNull(value);
+        assertFalse("unknown build id", value.equalsIgnoreCase("unknown"));
     }
 
     /**
