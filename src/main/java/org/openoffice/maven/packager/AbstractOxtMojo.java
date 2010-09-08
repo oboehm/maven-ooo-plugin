@@ -190,7 +190,7 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
             File contentDirectory = getClassesDirectory();
             assert contentDirectory != null;
             if (!contentDirectory.exists()) {
-                getLog().warn("JAR will be empty - no content was marked for inclusion!");
+                log.warn("JAR will be empty - no content was marked for inclusion!");
             } else {
                 archiver.getArchiver().addDirectory(contentDirectory, getIncludes(), getExcludes());
             }
@@ -199,7 +199,7 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
             assert existingManifest != null;
 
             if (useDefaultManifestFile && existingManifest.exists() && archive.getManifestFile() == null) {
-                getLog().info("Adding existing MANIFEST to archive. Found under: " + existingManifest.getPath());
+                log.info("Adding existing MANIFEST to archive. Found under: " + existingManifest.getPath());
                 archive.setManifestFile(existingManifest);
             }
 

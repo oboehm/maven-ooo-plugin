@@ -108,7 +108,7 @@ public class IdlcVisitor implements IVisitor {
         File sdkIdl = new File(ConfigurationManager.getSdk(), "idl");
         File prjIdl = ConfigurationManager.getIdlDir();
 
-        System.out.println(outDir);
+        log.debug("output dir: " + outDir);
 
 //        String[] argsParam = { outDir.getPath(), sdkIdl.getPath(), prjIdl.getPath(), pFile.getPath() };
 //

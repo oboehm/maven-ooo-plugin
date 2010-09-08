@@ -470,15 +470,15 @@ public class ConfigurationManager {
         CommandLineUtils.StringStreamConsumer output = new CommandLineUtils.StringStreamConsumer();
         CommandLineUtils.StringStreamConsumer error = new CommandLineUtils.StringStreamConsumer();
         int returnValue = CommandLineUtils.executeCommandLine(cl, output, error);
-        log.info("'" + cl + "' returned with " + returnValue);
         String outmsg = output.getOutput().trim();
         if (StringUtils.isNotEmpty(outmsg)) {
-            log.info("stdout: " + outmsg);
+            log.info(outmsg);
         }
         String errmsg = error.getOutput().trim();
         if (StringUtils.isNotEmpty(errmsg)) {
-            log.warn("stderr: " + errmsg);
+            log.warn(errmsg);
         }
+        log.info("'" + cl + "' returned with " + returnValue);
         return returnValue;
     }
     
