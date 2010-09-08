@@ -28,7 +28,6 @@ import java.io.File;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.openoffice.maven.utils.FileFinder;
 
 /**
@@ -44,7 +43,7 @@ import org.openoffice.maven.utils.FileFinder;
  */
 public final class Environment {
     
-    private static final Log log = new SystemStreamLog();
+    private static final Log log = ConfigurationManager.getLog();
     private static final String OFFICE_HOME = "OFFICE_HOME";
     private static final String OFFICE_BASE_HOME = "OFFICE_BASE_HOME";
     private static final String OO_SDK_HOME = "OO_SDK_HOME";

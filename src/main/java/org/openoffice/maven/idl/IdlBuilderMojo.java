@@ -136,17 +136,7 @@ public class IdlBuilderMojo extends AbstractMojo {
                                  MojoFailureException {
 
         try {
-            ooo = ConfigurationManager.initOOo(ooo);
-            log.info("OpenOffice.org used: " + ooo.getAbsolutePath());
-
-            sdk = ConfigurationManager.initSdk(sdk);
-            log.info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
-            
-            ConfigurationManager.setIdlDir(idlDir);
-            log.info("idlDir used: " + idlDir.getAbsolutePath());
-
-            ConfigurationManager.setOutput(directory);
-            ConfigurationManager.setClassesOutput(outputDirectory);
+            setUp();
             
             // Check if the IDL folder is present
             File idlDir = ConfigurationManager.getIdlDir();
@@ -185,6 +175,18 @@ public class IdlBuilderMojo extends AbstractMojo {
             //throw new MojoFailureException("Please check the above errors");
             throw new MojoFailureException("Error during idl-build", e);
         }
+    }
+
+    private void setUp() {
+        ConfigurationManager.setLog(log);
+        ooo = ConfigurationManager.initOOo(ooo);
+        log.info("OpenOffice.org used: " + ooo.getAbsolutePath());
+        sdk = ConfigurationManager.initSdk(sdk);
+        log.info("OpenOffice.org SDK used: " + sdk.getAbsolutePath());
+        ConfigurationManager.setIdlDir(idlDir);
+        log.info("idlDir used: " + idlDir.getAbsolutePath());
+        ConfigurationManager.setOutput(directory);
+        ConfigurationManager.setClassesOutput(outputDirectory);
     }
 
     /**
@@ -275,8 +277,6 @@ public class IdlBuilderMojo extends AbstractMojo {
         }
         String modulePath = currentFile.getPath().substring(
                 idlDir.getPath().length() + 1);
-//        String fileSep = System.getProperty("file.separator");
-//        String rootModule = modulePath.replaceAll(fileSep, ".");
         modulePath = FilenameUtils.separatorsToUnix(modulePath);
         String rootModule = modulePath.replaceAll("/", ".");
         return rootModule;
