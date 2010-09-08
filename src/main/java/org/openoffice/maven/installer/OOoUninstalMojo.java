@@ -1,12 +1,11 @@
 package org.openoffice.maven.installer;
 
-import java.io.*;
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.Log;
 import org.openoffice.maven.ConfigurationManager;
 
 /**
@@ -16,8 +15,6 @@ import org.openoffice.maven.ConfigurationManager;
  * @goal uninstall
  */
 public class OOoUninstalMojo extends AbstractMojo {
-
-    private final Log log = this.getLog();
 
     /**
      * @parameter default-value="${project.attachedArtifacts}
@@ -80,7 +77,7 @@ public class OOoUninstalMojo extends AbstractMojo {
 //                    unoPluginFile.getCanonicalPath(), //
 //            };
 
-            log.info("Uninstalling plugin to OOo... please wait");
+            getLog().info("Uninstalling plugin to OOo... please wait");
 //            Process process = ConfigurationManager.runTool(cmd);
 //            { // read std input
 //                String message = "";

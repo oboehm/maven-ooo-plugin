@@ -43,7 +43,6 @@ import org.openoffice.maven.utils.FileFinder;
  */
 public final class Environment {
     
-    private static final Log log = ConfigurationManager.getLog();
     private static final String OFFICE_HOME = "OFFICE_HOME";
     private static final String OFFICE_BASE_HOME = "OFFICE_BASE_HOME";
     private static final String OO_SDK_HOME = "OO_SDK_HOME";
@@ -55,6 +54,10 @@ public final class Environment {
     
     /** Utility class - no need to instantiate it. */
     private Environment() {}
+    
+    private static final Log getLog() {
+        return ConfigurationManager.getLog();
+    }
     
     private static File guessOfficeHome() {
         File home = getenvAsFile(OFFICE_HOME);
@@ -73,7 +76,7 @@ public final class Environment {
             home = tryDirs("/opt/openoffice.org3");
         }
         if (home == null) {
-            log.debug("office home not found - must be set via configuration '<ooo>...</ooo>'");
+            getLog().debug("office home not found - must be set via configuration '<ooo>...</ooo>'");
         }
         return home;
     }
@@ -94,7 +97,7 @@ public final class Environment {
             home = FileFinder.tryDirs(new File(officeHome, "Basis/sdk"), new File("/opt/openoffice.org/basis3.2/sdk"));
         }
         if (home == null) {
-            log.debug("SDK home not found - must be set via configuration '<sdk>...</sdk>'");
+            getLog().debug("SDK home not found - must be set via configuration '<sdk>...</sdk>'");
         }
         return home;
     }

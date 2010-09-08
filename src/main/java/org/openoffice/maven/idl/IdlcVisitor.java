@@ -45,21 +45,20 @@ package org.openoffice.maven.idl;
 
 import java.io.File;
 
-import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.openoffice.maven.ConfigurationManager;
-import org.openoffice.maven.utils.*;
+import org.openoffice.maven.utils.IVisitable;
+import org.openoffice.maven.utils.VisitableFile;
 
 /**
  * Visits all the IDL files and build them.
  * 
  * @author Cedric Bosdonnat
  */
-public class IdlcVisitor implements IVisitor {
+public class IdlcVisitor extends AbstractVisitor {
 
-    private static final Log log = new IdlBuilderMojo().getLog();
     private boolean mFoundIdlFile = false;
-
+    
     /**
      * @return <code>true</code> if one IDL file have been build,
      *         <code>false</code> otherwise
@@ -98,7 +97,7 @@ public class IdlcVisitor implements IVisitor {
      */
     private static void runIdlcOnFile(VisitableFile pFile) throws Exception {
 
-        log.info("Building file: " + pFile.getPath());
+        getLog().info("Building file: " + pFile.getPath());
 
         String idlPath = ConfigurationManager.getIdlDir().getAbsolutePath();
         String idlRelativePath = pFile.getParentFile().getAbsolutePath().substring(idlPath.length());
@@ -108,7 +107,7 @@ public class IdlcVisitor implements IVisitor {
         File sdkIdl = new File(ConfigurationManager.getSdk(), "idl");
         File prjIdl = ConfigurationManager.getIdlDir();
 
-        log.debug("output dir: " + outDir);
+        getLog().debug("output dir: " + outDir);
 
 //        String[] argsParam = { outDir.getPath(), sdkIdl.getPath(), prjIdl.getPath(), pFile.getPath() };
 //

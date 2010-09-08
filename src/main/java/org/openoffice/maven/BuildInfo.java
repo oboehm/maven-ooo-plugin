@@ -31,7 +31,6 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.logging.Log;
 
-// TODO: Auto-generated Javadoc
 /**
  * This class provides some information when the plugin was build like the
  * version, the build number or date.

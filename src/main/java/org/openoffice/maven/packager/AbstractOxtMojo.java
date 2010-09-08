@@ -23,7 +23,6 @@ import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
@@ -40,8 +39,6 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
                     "**/.cvsignore" };
 
     private static final String[] DEFAULT_INCLUDES = new String[] { };
-
-    private final Log log = super.getLog();
 
     /**
      * List of files to include. Specified as fileset patterns.
@@ -190,7 +187,7 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
             File contentDirectory = getClassesDirectory();
             assert contentDirectory != null;
             if (!contentDirectory.exists()) {
-                log.warn("JAR will be empty - no content was marked for inclusion!");
+                getLog().warn("JAR will be empty - no content was marked for inclusion!");
             } else {
                 archiver.getArchiver().addDirectory(contentDirectory, getIncludes(), getExcludes());
             }
@@ -199,12 +196,12 @@ public abstract class AbstractOxtMojo extends AbstractMojo {
             assert existingManifest != null;
 
             if (useDefaultManifestFile && existingManifest.exists() && archive.getManifestFile() == null) {
-                log.info("Adding existing MANIFEST to archive. Found under: " + existingManifest.getPath());
+                getLog().info("Adding existing MANIFEST to archive. Found under: " + existingManifest.getPath());
                 archive.setManifestFile(existingManifest);
             }
 
             assert project.getArtifact() != null;
-            log.debug("createArchive(..) with project " + project);
+            getLog().debug("createArchive(..) with project " + project);
             archiver.createArchive(project, archive);
 
             return jarFile;

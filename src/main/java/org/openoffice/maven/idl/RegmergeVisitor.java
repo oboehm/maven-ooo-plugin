@@ -43,10 +43,10 @@
  ************************************************************************/
 package org.openoffice.maven.idl;
 
-import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.openoffice.maven.ConfigurationManager;
-import org.openoffice.maven.utils.*;
+import org.openoffice.maven.utils.IVisitable;
+import org.openoffice.maven.utils.VisitableFile;
 
 /**
  * Visits the URD files and merge them with the <code>types.rdb</code> file.
@@ -54,10 +54,8 @@ import org.openoffice.maven.utils.*;
  * @author Cedric Bosdonnat
  *
  */
-public class RegmergeVisitor implements IVisitor {
+public class RegmergeVisitor extends AbstractVisitor {
     
-    private static final Log log = new IdlBuilderMojo().getLog();
-
     /**
      * {@inheritDoc}
      */
@@ -86,7 +84,7 @@ public class RegmergeVisitor implements IVisitor {
     private static void runRegmergeOnFile(VisitableFile pFile) 
         throws Exception {
         
-        log.info("Merging file: " + pFile.getPath());
+        getLog().info("Merging file: " + pFile.getPath());
         
         // Compute the command line
 //        String commandPattern = "regmerge {0} /UCR {0} \"{1}\"";

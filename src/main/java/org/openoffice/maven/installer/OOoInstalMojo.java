@@ -3,7 +3,6 @@ package org.openoffice.maven.installer;
 import java.io.File;
 
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.openoffice.maven.ConfigurationManager;
 
@@ -14,8 +13,6 @@ import org.openoffice.maven.ConfigurationManager;
  */
 public class OOoInstalMojo extends AbstractMojo {
     
-    private final Log log = this.getLog();
-
     /**
      * The Maven project.
      * 
@@ -98,7 +95,7 @@ public class OOoInstalMojo extends AbstractMojo {
 //            int returnCode = process.waitFor();
             int returnCode = ConfigurationManager.runCommand(unopkg, "add", "-f", unoPluginFile.getCanonicalPath());
             if (returnCode == 0) {
-                log.info("Plugin installed successfully");
+                getLog().info("Plugin installed successfully");
             } else {
 //                System.out.println("\nRunning: [" + StringUtils.join(cmd, " ") + "]");
 //                throw new MojoExecutionException("unopkg renurned in error. Code: " + returnCode + "\n" + //
