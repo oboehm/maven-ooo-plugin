@@ -26,6 +26,8 @@ package org.openoffice.maven;
 
 import java.io.File;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.openoffice.maven.utils.FileFinder;
@@ -64,6 +66,10 @@ public final class Environment {
         if (home != null) {
             return home;
         }
+        home = guessOfficeHomeFromPATH();
+        if (home != null) {
+            return home;
+        }
         if (SystemUtils.IS_OS_LINUX) {
             home = tryDirs("/opt/openoffice.org3", "/usr/lib/openoffice");
         } else if (SystemUtils.IS_OS_MAC) {
@@ -79,6 +85,32 @@ public final class Environment {
             getLog().debug("office home not found - must be set via configuration '<ooo>...</ooo>'");
         }
         return home;
+    }
+    
+    private static File guessOfficeHomeFromPATH() {
+        String path = getenv("PATH");
+        return guessOfficeHomeFromPATH(path);
+    }
+
+    /**
+     * Guess office home from search path.
+     * This method has default visibility for testing.
+     *
+     * @param path the path
+     * @return the file
+     */
+    static File guessOfficeHomeFromPATH(String path) {
+        String[] pathElements = StringUtils.split(path, File.pathSeparatorChar);
+        String baseDirName = getBaseDirName();
+        for (int i = 0; i < pathElements.length; i++) {
+            String pathname = FilenameUtils.separatorsToUnix(pathElements[i]);
+            pathname = FilenameUtils.normalizeNoEndSeparator(pathname);
+            int n = pathname.lastIndexOf(baseDirName);
+            if (n > 0) {
+                return new File(pathname.substring(0, n));
+            }
+        }
+        return null;
     }
     
     private static File guessOoSdkHome() {
@@ -143,15 +175,19 @@ public final class Environment {
      */
     public static synchronized File getOfficeBaseHome() {
         if (officeBaseHome == null) {
-            if (SystemUtils.IS_OS_MAC) {
-                officeBaseHome = new File(getOfficeHome(), "Contents/basis-link");
-            } else if (SystemUtils.IS_OS_WINDOWS) {
-                officeBaseHome = new File(getOfficeHome(), "Basis");
-            } else {
-                officeBaseHome = new File(getOfficeHome(), "basis-link");
-            }
+            officeBaseHome = new File(getOfficeHome(), getBaseDirName());
         }
         return officeBaseHome;
+    }
+
+    private static String getBaseDirName() {
+        if (SystemUtils.IS_OS_MAC) {
+            return "Contents/basis-link";
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            return "Basis";
+        } else {
+            return "basis-link";
+        }
     }
 
     /**
