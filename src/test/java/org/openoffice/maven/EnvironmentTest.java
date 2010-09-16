@@ -94,11 +94,12 @@ public class EnvironmentTest extends AbstractTest {
 
     @Test
     public void guessOfficeHomeFromPATH() {
-        String path = "/opt/ooo/OpenOffice.org.app/Contents/basis-link/ure-link/bin" + File.pathSeparator
-                + "/opt/ooo/OpenOffice.org.app/Contents/MacOS";
+        String path = "/opt/OpenOffice.org/Contents/basis-link/ure-link/bin" + File.pathSeparator
+                + "/opt/OpenOffice.org/Contents/MacOS" + File.pathSeparator + "/opt/OpenOffice.org/Basis"
+                + File.pathSeparator + "/opt/OpenOffice.org/basis-link";
         File officeHome = Environment.guessOfficeHomeFromPATH(path);
         assertNotNull(officeHome);
-        assertEquals("/opt/ooo/OpenOffice.org.app", officeHome.getPath());
+        assertEquals(new File("/opt/OpenOffice.org"), officeHome);
     }
 
 }
